@@ -3,8 +3,11 @@ using System.Collections;
 
 public class CameraAndroid : MonoBehaviour {
 
-	public float PanSpeed = 0.025F;
-	public float PinchSpeed = 0.05F;
+	public float PanSpeed = 0.025f;
+	public float PinchSpeed = 0.05f;
+	public float Damper = 0.5f;
+	public float maxZoom = 2;
+	public float maxPan = 2;
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +19,7 @@ public class CameraAndroid : MonoBehaviour {
 		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved) {
 			Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
 			// Translate along world cordinates. (Done this way so we can angle the camera freely.)
-			transform.position -= new Vector3(touchDeltaPosition.x * PanSpeed, 0, touchDeltaPosition.y * PanSpeed);
+				transform.position -= new Vector3(touchDeltaPosition.x * PanSpeed, 0, touchDeltaPosition.y * PanSpeed * Damper);
 		}
 		if ( Input.touchCount == 2 )
 		{
@@ -30,7 +33,7 @@ public class CameraAndroid : MonoBehaviour {
 			float touchDelta = curDist.magnitude - prevDist.magnitude;
 			
 			// Translate along local coordinate space.
-			Camera.main.transform.Translate(0, 0, touchDelta * PinchSpeed);   
+			Camera.main.transform.Translate(0, 0, touchDelta * PinchSpeed * Damper);   
 		}
 	}
 }
