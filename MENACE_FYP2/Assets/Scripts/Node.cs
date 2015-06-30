@@ -12,7 +12,7 @@ public class Node {
 	
 	public float DistanceTo(Node n) {
 		if(n == null) {
-			Debug.LogError("WTF?");
+			Debug.LogError("ERROR DISTANCE TO");
 		}
 		
 		return Vector2.Distance(
