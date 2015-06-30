@@ -3,27 +3,94 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class TileMap : MonoBehaviour {
-
+	public List<GameObject> UnitList = new List<GameObject> ();
+	public GameObject Unit;
 	public GameObject selectedUnit;
 
-	public TileType[] tileTypes;
+	private List<GameObject> TileList = new List<GameObject>();
+	int currentTileX;
+	int currentTileY;
 
+	public TileType[] tileTypes;
 	int[,] tiles;
 	Node[,] graph;
-
 
 	int mapSizeX = 10;
 	int mapSizeY = 10;
 
 	void Start() {
-		// Setup the selectedUnit's variable
-		selectedUnit.GetComponent<Unit>().tileX = (int)selectedUnit.transform.position.x;
-		selectedUnit.GetComponent<Unit>().tileY = (int)selectedUnit.transform.position.y;
-		selectedUnit.GetComponent<Unit>().map = this;
+		GenerateUnits ();
+		selectedUnit = UnitList[1];
+		selectedUnit.GetComponent<Unit> ().beingControlled = true;
+
+
 
 		GenerateMapData();
 		GeneratePathfindingGraph();
 		GenerateMapVisual();
+
+
+		Debug.Log ("Generated Data,Graph,Visual");
+
+	}
+
+	void Update()
+	{
+		//Debug.Log ("Current Path: "+ selectedUnit.GetComponent<Unit>().currentPath);
+		if (selectedUnit.GetComponent<Unit> ().reachedDestination == true) {
+			foreach (GameObject go2 in TileList) {
+
+				if (go2.tag == "Enemy") {
+
+					if(go2.GetComponent<ClickableTile> ().tileX == selectedUnit.GetComponent<Unit> ().tileX && go2.GetComponent<ClickableTile> ().tileY == selectedUnit.GetComponent<Unit> ().tileY){
+						Debug.Log ("Owner: " + go2.GetComponent<ClickableTile> ().TILEOWNER);
+						Debug.Log ("X: " + go2.GetComponent<ClickableTile> ().tileX + ", Y: " + go2.GetComponent<ClickableTile> ().tileY);
+						go2.GetComponent<ClickableTile> ().TILEOWNER = 1;
+
+					}
+
+				}
+			}
+
+			if(selectedUnit == UnitList[0])
+			{
+				Debug.Log("111111111111111111111");
+				selectedUnit.GetComponent<Unit> ().beingControlled = false;
+				selectedUnit = UnitList[1];
+				selectedUnit.GetComponent<Unit>().tileX = (int)selectedUnit.transform.position.x;
+				selectedUnit.GetComponent<Unit>().tileY = (int)selectedUnit.transform.position.y;
+				selectedUnit.GetComponent<Unit>().map = this;
+				selectedUnit.GetComponent<Unit> ().reachedDestination = false;
+				selectedUnit.GetComponent<Unit> ().beingControlled = true;
+
+
+			}
+			else if (selectedUnit == UnitList[1])
+			{
+				Debug.Log("2222222222222222222222");
+				selectedUnit.GetComponent<Unit> ().beingControlled = false;
+				selectedUnit = UnitList[0];
+				selectedUnit.GetComponent<Unit>().tileX = (int)selectedUnit.transform.position.x;
+				selectedUnit.GetComponent<Unit>().tileY = (int)selectedUnit.transform.position.y;
+				selectedUnit.GetComponent<Unit>().map = this;
+				selectedUnit.GetComponent<Unit> ().reachedDestination = false;
+				selectedUnit.GetComponent<Unit> ().beingControlled = true;
+
+			}
+		}
+
+//Check if Tile has unit on it
+		foreach (GameObject tile in TileList) {
+			tile.GetComponent<ClickableTile>().containUnit = false;
+			foreach(GameObject unit in UnitList)
+			{
+				if(unit.GetComponent<Unit>().tileX == tile.GetComponent<ClickableTile>().tileX &&
+   				   unit.GetComponent<Unit>().tileY == tile.GetComponent<ClickableTile>().tileY)
+   				{
+   					tile.GetComponent<ClickableTile>().containUnit = true;
+   				}
+			}
+		}
 	}
 
 	void GenerateMapData() {
@@ -51,8 +118,8 @@ public class TileMap : MonoBehaviour {
 		tiles[5, 4] = 2;
 		tiles[6, 4] = 2;
 		tiles[7, 4] = 2;
-		tiles[8, 4] = 2;
 
+		tiles[8, 4] = 2;
 		tiles[4, 5] = 2;
 		tiles[4, 6] = 2;
 		tiles[8, 5] = 2;
@@ -137,19 +204,22 @@ public class TileMap : MonoBehaviour {
 		}
 	}
 
+
 	void GenerateMapVisual() {
 		for(int x=0; x < mapSizeX; x++) {
 			for(int y=0; y < mapSizeX; y++) {
 				TileType tt = tileTypes[ tiles[x,y] ];
-				GameObject go = (GameObject)Instantiate( tt.tileVisualPrefab, new Vector3(x, y, 0), Quaternion.identity );
-
-				ClickableTile ct = go.GetComponent<ClickableTile>();
-				ct.tileX = x;
-				ct.tileY = y;
-				ct.map = this;
+				GameObject go = (GameObject)Instantiate( tt.goTile, new Vector3(x, y, 0), Quaternion.identity );
+			
+				go.GetComponent<ClickableTile>().TILEOWNER = tt.tileowner;
+				go.GetComponent<ClickableTile>().tileX = x;
+				go.GetComponent<ClickableTile>().tileY = y;
+				go.GetComponent<ClickableTile>().map = this;
+				TileList.Add(go);
 			}
 		}
 	}
+
 
 	public Vector3 TileCoordToWorldCoord(int x, int y) {
 		return new Vector3(x, y, 0);
@@ -255,5 +325,17 @@ public class TileMap : MonoBehaviour {
 
 		selectedUnit.GetComponent<Unit>().currentPath = currentPath;
 	}
+
+	void GenerateUnits(){
+		for(int i = 0; i < 2; ++i){
+			GameObject genUnit = Instantiate(Unit, new Vector2(3+i,2+i), Quaternion.identity) as GameObject;
+			UnitList.Add(genUnit);
+			genUnit.GetComponent<Unit>().ID = i;
+			genUnit.GetComponent<Unit>().tileX = (int)genUnit.transform.position.x;
+			genUnit.GetComponent<Unit>().tileY = (int)genUnit.transform.position.y;
+			genUnit.GetComponent<Unit>().map = this;
+		}
+	}
+
 
 }
