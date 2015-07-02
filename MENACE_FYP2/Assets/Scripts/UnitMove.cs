@@ -2,8 +2,10 @@
 using System.Collections;
 
 public class UnitMove : MonoBehaviour {
-
+	//public GameObject a;
 	private bool flag = false;
+	public TileMouseOver unitSelect;
+
 
 	private Vector3 endPoint;
 	private float yAxis;
@@ -12,11 +14,13 @@ public class UnitMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		yAxis = gameObject.transform.position.y;
+		//Select.unitSelect = false;
+		//Select = gameObject.GetComponent<TileMouseOver>().unitSelect;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || (Input.GetMouseButtonDown(0)))
+		if ((/*unitSelect.unitSelect == true &&*/ Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || (Input.GetMouseButtonDown(0)))
 		{
 			RaycastHit hit;
 			Ray ray;

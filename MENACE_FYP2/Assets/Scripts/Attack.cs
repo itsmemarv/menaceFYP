@@ -46,7 +46,7 @@ public class Attack : MonoBehaviour {
 
 		if(distance < 2.5f) {
 			if(direction > 0) { 
-				Health eh = (Health)target.GetComponent("PlayerHealth");
+				Health eh = (Health)target.GetComponent("Sphere");
 				eh.AddjustCurrentHealth(-10);
 			}
 		}

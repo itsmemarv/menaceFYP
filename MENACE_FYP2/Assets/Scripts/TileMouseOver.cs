@@ -4,7 +4,7 @@ using System.Collections;
 public class TileMouseOver : MonoBehaviour {
 
 	GameObject unit;
-	private bool unitSelect = false;
+	public bool unitSelect = false;
 	public float speed = 0.03f;
 
 	public Color highlightColor;
