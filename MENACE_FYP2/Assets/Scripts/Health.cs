@@ -2,20 +2,20 @@
 using System.Collections;
 
 public class Health : MonoBehaviour {
-	public int maxHealth = 100;
-	public int curHealth = 100;
+	public int maxHealth = 1000;
+	public int curHealth = 1000;
 	
 	public float healthBarLength;
-	
+	private GameObject GoingToDestroy;
 	
 	void Start () {
 		healthBarLength = Screen.width / 8;
+		GoingToDestroy = GameObject.FindGameObjectWithTag("Enemy");
 	}
 	
 	
 	void Update () {
 		AddjustCurrentHealth(0);
-		
 	}
 	
 	
@@ -27,10 +27,17 @@ public class Health : MonoBehaviour {
 	
 	
 	public void AddjustCurrentHealth(int adj) {
-		curHealth += adj;	
+		curHealth += adj;
 		
 		if(curHealth < 0)
+		{
 			curHealth = 0;
+			GameObject.Destroy(GoingToDestroy);
+			//for(int i = 0; i < GoingToDestroy.Length; i++)
+			//{
+				//Destroy(GoingToDestroy[i].gameObject);
+			//}
+		}
 		
 		if(curHealth > maxHealth)
 			curHealth = maxHealth;

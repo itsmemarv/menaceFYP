@@ -8,8 +8,8 @@ public class Units : MonoBehaviour {
 
 	public GameObject prefab;
 
-	public int unitWidth = 5;
-	public int unitHeight = 5;
+	public int unitWidth = 4;
+	public int unitHeight = 4;
 	public float spacing = 1.5f;
 
 	public float spawnSpeed = 0.0f;
@@ -22,7 +22,7 @@ public class Units : MonoBehaviour {
 		//{
 			for(int x = 0; x < unitWidth; x++){
 				for(int z = 0; z < unitHeight; z++){
-					Vector3 pos = new Vector3(x, 0, z) * spacing;
+					Vector3 pos = new Vector3(x, 0.5f, z) * spacing;
 					_list.Add ((GameObject)Instantiate(prefab, pos, Quaternion.identity));
 				}
 			}
