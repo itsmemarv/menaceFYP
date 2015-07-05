@@ -9,7 +9,7 @@ public class Health : MonoBehaviour {
 	
 	
 	void Start () {
-		healthBarLength = Screen.width / 2;
+		healthBarLength = Screen.width / 8;
 	}
 	
 	
@@ -20,7 +20,9 @@ public class Health : MonoBehaviour {
 	
 	
 	void OnGUI(){
-		GUI.Box(new Rect(10, 10, healthBarLength, 20), curHealth + "/" + maxHealth);	
+		Vector3 screenPos = Camera.main.WorldToScreenPoint(this.transform.position);
+		GUI.Box(new Rect(screenPos.x, Screen.height - screenPos.y, healthBarLength, 20), curHealth + "/" + maxHealth);	
+
 	}
 	
 	
@@ -36,6 +38,6 @@ public class Health : MonoBehaviour {
 		if(maxHealth < 1)
 			maxHealth = 1;
 		
-		healthBarLength = (Screen.width / 2) * (curHealth / (float)maxHealth);
+		healthBarLength = (Screen.width / 8) * (curHealth / (float)maxHealth);
 	}
 }
