@@ -4,13 +4,13 @@ using System.Collections;
 public class Health : MonoBehaviour {
 	public int maxHealth = 1000;
 	public int curHealth = 1000;
-	
+
 	public float healthBarLength;
-	private GameObject GoingToDestroy;
+	private GameObject[] GoingToDestroy;
 	
 	void Start () {
 		healthBarLength = Screen.width / 8;
-		GoingToDestroy = GameObject.FindGameObjectWithTag("Enemy");
+		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("SelectableUnits");
 	}
 	
 	
@@ -28,23 +28,27 @@ public class Health : MonoBehaviour {
 	
 	public void AddjustCurrentHealth(int adj) {
 		curHealth += adj;
-		
-		if(curHealth < 0)
-		{
-			curHealth = 0;
-			GameObject.Destroy(GoingToDestroy);
-			//for(int i = 0; i < GoingToDestroy.Length; i++)
-			//{
-				//Destroy(GoingToDestroy[i].gameObject);
-			//}
-		}
-		
-		if(curHealth > maxHealth)
-			curHealth = maxHealth;
-		
-		if(maxHealth < 1)
-			maxHealth = 1;
-		
-		healthBarLength = (Screen.width / 8) * (curHealth / (float)maxHealth);
+
+		//foreach(GameObject stuff in GoingToDestroy)
+		//{
+			if(curHealth < 0)
+			{
+				curHealth = 0;
+				//GameObject.Destroy(stuff);
+				Destroy(this.gameObject);
+				//for(int i = 0; i < GoingToDestroy.Length; i++)
+				//{
+					//Destroy(GoingToDestroy[i].gameObject);
+				//}
+			}
+			
+			if(curHealth > maxHealth)
+				curHealth = maxHealth;
+			
+			if(maxHealth < 1)
+				maxHealth = 1;
+			
+			healthBarLength = (Screen.width / 8) * (curHealth / (float)maxHealth);
+		//}
 	}
 }
