@@ -17,6 +17,8 @@ public class RegionScript : MonoBehaviour {
 
 	public float regionX;
 	public float regionY;
+
+	public GameObject unitOnRegion;
 	// Use this for initialization
 
 	void Awake(){

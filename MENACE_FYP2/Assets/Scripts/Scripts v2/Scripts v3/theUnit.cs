@@ -13,15 +13,19 @@ public class theUnit : MonoBehaviour {
 
 	public GameObject theMap;
 	public GameObject sceneController;
-	// Use this for initialization
+
+	public int numberOfUnits;
 
 	void Awake(){
 		DontDestroyOnLoad (gameObject);
 	}
-	
+
+	// Use this for initialization
 	void Start () {
 		theMap = GameObject.FindGameObjectWithTag ("MAP");
 		sceneController = GameObject.Find ("SceneController");
+
+		numberOfUnits = 5;
 	}
 
 	// Update is called once per frame
@@ -59,7 +63,10 @@ public class theUnit : MonoBehaviour {
 					newUnit.GetComponent<theUnit> ().posY = (float)theMap.GetComponent<MapScript> ().previousRegion.transform.position.y;
 					newUnit.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedUnit.GetComponent<theUnit> ().ID;
 					newUnit.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedUnit.GetComponent<theUnit> ().tag;//"unit_Player2";
-					newUnit.transform.parent = theMap.GetComponent<MapScript> ().mapParent.transform;
+					newUnit.transform.parent = theMap.GetComponent<MapScript> ().controller.transform;
+
+					theMap.GetComponent<MapScript> ().controller.GetComponent<SceneController>().objectsInHierarchy.Add(newUnit);
+					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript>().unitOnRegion = newUnit;
 					theMap.GetComponent<MapScript> ().unitList.Add (newUnit);
 
 					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner = gameObject.GetComponent<theUnit> ().ID; 						// Change Tile ID according to who is playing
@@ -78,6 +85,9 @@ public class theUnit : MonoBehaviour {
 				} else if (theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true && // Tile has own Unit
 					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner != gameObject.GetComponent<theUnit> ().ID) {
 					Debug.Log ("HAS UNIT && DIFFERENT OWNER!! ATTACK!!");
+					sceneController.GetComponent<SceneController>().Player1_Unit = gameObject;
+					sceneController.GetComponent<SceneController>().Player2_Unit = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript>().unitOnRegion;
+					sceneController.GetComponent<SceneController>().Region_onPlay = theMap.GetComponent<MapScript> ().selectedRegion;
 					sceneController.GetComponent<SceneController>().inBattleScene = true;
 					Application.LoadLevel(1);
 					return true;

@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+
+//public enum turn_Choice{
+//	MOVE = 0,
+//	TRAIN = 1
+//};
+
+
 public class MapScript : MonoBehaviour {
 
 	public static MapScript MapControl;
@@ -39,7 +46,10 @@ public class MapScript : MonoBehaviour {
 	public int player2counter;
 	public bool endCount;
 
+//	public bool chooseMove;
+//	public bool chooseTrain;
 
+//	turn_Choice theChoice;
 
 
 	void Awake(){
@@ -72,14 +82,14 @@ public class MapScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		foreach (GameObject units in unitList) {
-			if (!controller.GetComponent<SceneController>().inBattleScene) {
-				units.SetActive (true);
-			} else 
-		if (controller.GetComponent<SceneController>().inBattleScene) {
-				units.SetActive (false);
-			}
-		}
+//		foreach (GameObject units in unitList) {
+//			if (!controller.GetComponent<SceneController>().inBattleScene) {
+//				units.SetActive (true);
+//			} else 
+//		if (controller.GetComponent<SceneController>().inBattleScene) {
+//				units.SetActive (false);
+//			}
+//		}
 
 
 		if (EndOfGame == false) {
@@ -95,21 +105,18 @@ public class MapScript : MonoBehaviour {
 				QueueUnitTags = false;
 			}
 
-			if (lockSelectedUnit == false) {
-				SelectUnit ();
-			}
-
 			foreach (GameObject unit in unitList) {
 				UpdateTileOwnership (unit);
+			}
+			if (lockSelectedUnit == false) {
+				SelectUnit ();
 			}
 
 			if (selectedUnit != null && lockSelectedUnit == true) {
 				if (lockSelectedMapTile == false) {
 					SelectRegion ();
-
 				}
 			}
-
 			if (selectedUnit != null) {
 				foreach (GameObject theTile in regionList) {
 					if (selectedUnit.GetComponent<theUnit> ().posX == theTile.GetComponent<RegionScript> ().regionX &&
@@ -119,11 +126,14 @@ public class MapScript : MonoBehaviour {
 					}
 				}
 			}
+
 			checkNeighbors ();
+	
 			if (TURNSLEFT <= 0)
 			{
 				EndOfGame = true;
 			}
+
 		} else if (EndOfGame == true && endCount == false) {
 			foreach(GameObject myUnits in unitList)
 			{
@@ -150,16 +160,19 @@ public class MapScript : MonoBehaviour {
 					selectedRegion = hitInfo.transform.gameObject;
 					if(StartOfGame == true) // Instantiate first 2 units 
 					{
-						GameObject theUnit = (GameObject)Instantiate( Unit );
-						//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
-						theUnit.transform.position = selectedRegion.transform.position;
-						theUnit.GetComponent<theUnit>().posX = (float)theUnit.transform.position.x;
-						theUnit.GetComponent<theUnit>().posY = (float)theUnit.transform.position.y;
-						theUnit.GetComponent<theUnit>().ID = unitList.Count + 1;	// should start at 0;
-						theUnit.transform.parent = mapParent.transform;
-						unitList.Add (theUnit);
-						selectedRegion.GetComponent<RegionScript>().hasUnit = true;
-
+						if(selectedRegion.GetComponent<RegionScript>().hasUnit == false){ // to prevent starting on the same regionee
+							GameObject theUnit = (GameObject)Instantiate( Unit );
+							//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
+							theUnit.transform.position = selectedRegion.transform.position;
+							theUnit.GetComponent<theUnit>().posX = (float)theUnit.transform.position.x;
+							theUnit.GetComponent<theUnit>().posY = (float)theUnit.transform.position.y;
+							theUnit.GetComponent<theUnit>().ID = unitList.Count + 1;	// should start at 0;
+							theUnit.transform.parent = controller.transform;
+							controller.GetComponent<SceneController>().objectsInHierarchy.Add(theUnit);
+							selectedRegion.GetComponent<RegionScript>().unitOnRegion = theUnit;
+							unitList.Add (theUnit);
+							selectedRegion.GetComponent<RegionScript>().hasUnit = true;
+						}
 					}
 					else{
 						selectedRegion.GetComponent<RegionScript> ().isSelected = true;
@@ -374,5 +387,25 @@ public class MapScript : MonoBehaviour {
 			GUI.Label (new Rect (Screen.width * 0.46f, 20, 100, 25), "Turns Left: " + TURNSLEFT);
 		}
 
+//		GUI.Box(new Rect(10,10, 180,110), "What do you want to do?");
+//		if(chooseMove == false && (chooseTrain || !chooseTrain)){
+//		chooseMove =  GUI.Toggle (new Rect (40, 40, 50, 20), chooseMove, "Move");
+//
+//				if(chooseTrain == true)
+//					chooseTrain = false;
+//		}
+//
+//		if(chooseTrain == false && (chooseTrain || chooseTrain)){
+//		chooseTrain = GUI.Toggle (new Rect (110, 40, 50, 20), chooseTrain, "Train");
+//			if(chooseMove == true)
+//				chooseMove = false;
+//		}
+//
+//		if(GUI.Button(new Rect(20,80,160,20), "Ok")) {
+//			if(chooseMove && !chooseTrain)
+//				theChoice = turn_Choice.MOVE;
+//			else if(chooseTrain && !chooseMove)
+//				theChoice = turn_Choice.TRAIN;
+//		}
 	}
 }

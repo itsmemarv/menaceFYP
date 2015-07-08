@@ -4,8 +4,11 @@ using System.Collections.Generic;
 public class SceneController : MonoBehaviour {
 
 	public static SceneController sceneControl;
-
 	public List<GameObject> objectsInHierarchy = new List<GameObject> ();
+
+	public GameObject Player1_Unit;
+	public GameObject Player2_Unit;
+	public GameObject Region_onPlay;
 
 	public bool inBattleScene;
 
@@ -28,11 +31,16 @@ public class SceneController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 		foreach (GameObject obj in objectsInHierarchy) {
 			obj.SetActive (true);
+//			if (obj.name == "Unit(Clone)")
+//				obj.GetComponent<Renderer>().enabled = true;
+
 			if (inBattleScene) {
-				obj.SetActive (false);
+				//if(obj.name != "Unit(Clone)")
+					obj.SetActive (false);
+//				else if (obj.name == "Unit(Clone)")
+//					obj.GetComponent<Renderer>().enabled = false;
 			}
 		}
 	}
