@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 public class theUnit : MonoBehaviour {
+
+	public static theUnit UnitControl;
 	public int ID;
 	public float posX;
 	public float posY;
@@ -10,10 +12,16 @@ public class theUnit : MonoBehaviour {
 	public bool endTurn;
 
 	public GameObject theMap;
-
+	public GameObject sceneController;
 	// Use this for initialization
+
+	void Awake(){
+		DontDestroyOnLoad (gameObject);
+	}
+	
 	void Start () {
 		theMap = GameObject.FindGameObjectWithTag ("MAP");
+		sceneController = GameObject.Find ("SceneController");
 	}
 
 	// Update is called once per frame
@@ -51,6 +59,7 @@ public class theUnit : MonoBehaviour {
 					newUnit.GetComponent<theUnit> ().posY = (float)theMap.GetComponent<MapScript> ().previousRegion.transform.position.y;
 					newUnit.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedUnit.GetComponent<theUnit> ().ID;
 					newUnit.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedUnit.GetComponent<theUnit> ().tag;//"unit_Player2";
+					newUnit.transform.parent = theMap.GetComponent<MapScript> ().mapParent.transform;
 					theMap.GetComponent<MapScript> ().unitList.Add (newUnit);
 
 					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner = gameObject.GetComponent<theUnit> ().ID; 						// Change Tile ID according to who is playing
@@ -69,7 +78,8 @@ public class theUnit : MonoBehaviour {
 				} else if (theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true && // Tile has own Unit
 					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner != gameObject.GetComponent<theUnit> ().ID) {
 					Debug.Log ("HAS UNIT && DIFFERENT OWNER!! ATTACK!!");
-					//gameObject.transform.position = theMap.GetComponent<MapScript> ().selectedRegion.transform.position;
+					sceneController.GetComponent<SceneController>().inBattleScene = true;
+					Application.LoadLevel(1);
 					return true;
 					
 				} else {

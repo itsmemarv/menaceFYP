@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class RegionScript : MonoBehaviour {
 
+	public static RegionScript RegionControl;
 	//GameObject theMap;
 	public int region_Owner;
 	public int region_ID;
@@ -17,6 +18,15 @@ public class RegionScript : MonoBehaviour {
 	public float regionX;
 	public float regionY;
 	// Use this for initialization
+
+	void Awake(){
+		//if (RegionControl == null) {
+			//DontDestroyOnLoad (gameObject);
+			//RegionControl = this;
+		//} else if(RegionControl != this){
+		//	Destroy(gameObject);
+		//}
+	}
 	void Start () {
 		//theMap = GameObject.FindGameObjectWithTag ("MAP");
 		regionX = gameObject.transform.position.x;

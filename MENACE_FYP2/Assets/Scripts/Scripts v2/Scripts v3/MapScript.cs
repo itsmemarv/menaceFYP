@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 public class MapScript : MonoBehaviour {
 
+	public static MapScript MapControl;
+	public static MapScript RegionControl;
+
+	public GameObject controller;
+
+	public GameObject mapParent;
 	// Region Variables
 	public List<GameObject> regionList = new List<GameObject>();
+	public GameObject regionParent;
 
 	// Unit Variables
 	public GameObject Unit;
@@ -31,6 +38,18 @@ public class MapScript : MonoBehaviour {
 	public int player1counter;
 	public int player2counter;
 	public bool endCount;
+
+
+
+
+	void Awake(){
+//		if (MapControl == null) {
+//			DontDestroyOnLoad (mapParent);
+//			MapControl = this;
+//		} else if(MapControl != this){
+//			Destroy(mapParent);
+//		}
+	}
 	// Use this for initialization
 	void Start () {
 		StartOfGame = true;
@@ -45,10 +64,24 @@ public class MapScript : MonoBehaviour {
 		player2counter = 0;
 		endCount = false;
 
-	}
+
+		controller = GameObject.Find ("SceneController");
+		AddRegionInList ();
+	}   
 	
 	// Update is called once per frame
 	void Update () {
+
+		foreach (GameObject units in unitList) {
+			if (!controller.GetComponent<SceneController>().inBattleScene) {
+				units.SetActive (true);
+			} else 
+		if (controller.GetComponent<SceneController>().inBattleScene) {
+				units.SetActive (false);
+			}
+		}
+
+
 		if (EndOfGame == false) {
 			if (unitList.Count < 2) { 
 				SelectRegion ();
@@ -109,10 +142,10 @@ public class MapScript : MonoBehaviour {
 		if (Input.GetMouseButtonDown (0)) {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
-			Debug.Log (hitInfo.transform.gameObject.tag);
+			Debug.Log (hitInfo.transform.gameObject.name);
 			foreach (GameObject theRegion in regionList)
 			{
-				if(hitInfo.transform.gameObject.tag == theRegion.tag)
+				if(hitInfo.transform.gameObject.name == theRegion.name)
 				{
 					selectedRegion = hitInfo.transform.gameObject;
 					if(StartOfGame == true) // Instantiate first 2 units 
@@ -123,6 +156,7 @@ public class MapScript : MonoBehaviour {
 						theUnit.GetComponent<theUnit>().posX = (float)theUnit.transform.position.x;
 						theUnit.GetComponent<theUnit>().posY = (float)theUnit.transform.position.y;
 						theUnit.GetComponent<theUnit>().ID = unitList.Count + 1;	// should start at 0;
+						theUnit.transform.parent = mapParent.transform;
 						unitList.Add (theUnit);
 						selectedRegion.GetComponent<RegionScript>().hasUnit = true;
 
@@ -131,7 +165,7 @@ public class MapScript : MonoBehaviour {
 						selectedRegion.GetComponent<RegionScript> ().isSelected = true;
 					}
 				}
-				else if (hitInfo.transform.gameObject.tag != theRegion.tag)
+				else if (hitInfo.transform.gameObject.name != theRegion.name)
 				{
 					//Debug.Log ("not Selected");
 					theRegion.GetComponent<RegionScript>().isSelected = false;
@@ -318,6 +352,11 @@ public class MapScript : MonoBehaviour {
 		}
 	}
 
+	void AddRegionInList(){
+		foreach (Transform region in regionParent.transform) {
+			regionList.Add(region.gameObject);
+		}
+	}
 
 	void OnGUI(){
 		if (unitList.Count < 2) {
