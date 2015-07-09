@@ -11,6 +11,10 @@ public class Units : MonoBehaviour {
 	public int unitWidth = 4;
 	public int unitHeight = 4;
 	public float spacing = 1.5f;
+	public float xpos;
+	public float ypos;
+	public float zpos;
+	public Vector3 EnteredCoord;
 
 	public float spawnSpeed = 0.0f;
 
@@ -18,12 +22,13 @@ public class Units : MonoBehaviour {
 	void Start () {
 		_list = new List<GameObject>();
 
+		EnteredCoord = new Vector3(xpos, ypos, zpos);
 		//for(int i = 0; i < (unitWidth * unitHeight); ++i)
 		//{
 			for(int x = 0; x < unitWidth; x++){
 				for(int z = 0; z < unitHeight; z++){
 					Vector3 pos = new Vector3(x, 0.35f, z) * spacing;
-					_list.Add ((GameObject)Instantiate(prefab, pos, Quaternion.identity));
+					_list.Add ((GameObject)Instantiate(prefab, pos + EnteredCoord, Quaternion.identity));
 				}
 			}
 		//}
@@ -32,7 +37,7 @@ public class Units : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		//transform.position.Set(xpos, ypos, zpos);
 	}
 
 	IEnumerator CreateSquad() {

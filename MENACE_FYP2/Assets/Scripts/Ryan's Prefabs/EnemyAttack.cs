@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Attack : MonoBehaviour {
+public class EnemyAttack : MonoBehaviour {
 	public GameObject target;
 	public float attackTime;
 	public float coolDown;
@@ -29,26 +29,26 @@ public class Attack : MonoBehaviour {
 		}
 		
 	}
-
+	
 	void OnTriggerEnter(Collider other)
 	{
 		Health eh = other.gameObject.GetComponent<Health>();
-		if (other.gameObject.tag == "Eney") {
+		if (other.gameObject.tag == "SelectableUnits") {
 			eh.AddjustCurrentHealth(-1000); //* Time.DeltaTime;
 		}
 	}
-
+	
 	private void Attacker() {
 		float distance = Vector3.Distance(target.transform.position, transform.position);
-
-
+		
+		
 		Vector3 dir = (target.transform.position - transform.position).normalized;
 		float direction = Vector3.Dot(dir, transform.forward);
-
-
-		if(distance < 2.5f && GameObject.FindGameObjectWithTag("Eney")) {
+		
+		
+		if(distance < 2.5f && GameObject.FindGameObjectWithTag("SelectableUnits")) {
 			if(direction > 0) { 
-				Health eh = (Health)target.GetComponent("Enemy");
+				Health eh = (Health)target.GetComponent("Cube(Clone)");
 				eh.AddjustCurrentHealth(-1000);
 			}
 		}

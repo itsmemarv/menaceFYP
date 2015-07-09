@@ -6,10 +6,6 @@ public class Bullet : MonoBehaviour {
 	public float speed = 10;
 
 	public Transform target;
-	// Use this for initialization
-	void Start () {
-	
-	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -23,9 +19,9 @@ public class Bullet : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider co)
+	void OnTriggerEnter(Collider cd)
 	{
-		Health health = co.GetComponentInChildren<Health>();
+		Health health = cd.GetComponentInChildren<Health>();
 		if (health) {
 			//health.decrease();
 			Destroy(gameObject);

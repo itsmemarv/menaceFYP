@@ -11,9 +11,9 @@ public class Tower : MonoBehaviour {
 		transform.Rotate(Vector3.up * Time.deltaTime * Speed, Space.World);
 	}
 
-	void OnTriggerEnter(Collider cd)
+	void OnTriggerStay(Collider cd)
 	{
-		if (cd)//(cd.tag.Equals("Eney"))
+		if (cd.gameObject.tag == "SelectableUnits")//(cd.tag.Equals("Eney"))
 		{
 			GameObject g = (GameObject)Instantiate(bulletObject, transform.position, Quaternion.identity);
 			g.GetComponent<Bullet>().target = cd.transform;

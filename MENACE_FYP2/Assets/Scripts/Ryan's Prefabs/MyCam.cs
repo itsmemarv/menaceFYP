@@ -39,7 +39,7 @@ public class MyCam : MonoBehaviour {
 		float mousePosY = Input.mousePosition.y;
 		int scrollDistance = 5;
 		float scrollSpeed = 70;
-		const float orthographicSizeMin = 5f;
+		const float orthographicSizeMin = 8f;
 		const float orthographicSizeMax = 256f;
 		
 		/*if (mousePosX < scrollDistance)

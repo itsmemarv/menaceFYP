@@ -23,8 +23,8 @@ public class UnitMove : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//if (select.isSelected == true)
-		if (GetComponent<UnitSelect>().isSelected == true)
-		{
+		//if (GetComponent<UnitSelect>().isSelected == true)
+		//{
 			if ((/*unitSelect.unitSelect == true &&*/ Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || (Input.GetMouseButtonDown(1)))
 			{
 				RaycastHit hit;
@@ -51,6 +51,6 @@ public class UnitMove : MonoBehaviour {
 				flag = false;
 				Debug.Log("I am here");
 			}
-		}
+		//}
 	}
 }
