@@ -11,10 +11,12 @@ public class Health : MonoBehaviour {
 	void Start () {
 		healthBarLength = Screen.width / 8;
 		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("SelectableUnits");
+		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("Eney");
 	}
 	
 	
 	void Update () {
+		if (GameObject.FindGameObjectWithTag("Eney"))
 		AddjustCurrentHealth(0);
 	}
 	

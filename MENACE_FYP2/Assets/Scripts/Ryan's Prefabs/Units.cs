@@ -22,7 +22,7 @@ public class Units : MonoBehaviour {
 		//{
 			for(int x = 0; x < unitWidth; x++){
 				for(int z = 0; z < unitHeight; z++){
-					Vector3 pos = new Vector3(x, 0.5f, z) * spacing;
+					Vector3 pos = new Vector3(x, 0.35f, z) * spacing;
 					_list.Add ((GameObject)Instantiate(prefab, pos, Quaternion.identity));
 				}
 			}

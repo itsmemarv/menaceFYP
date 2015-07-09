@@ -33,7 +33,11 @@ public class Attack : MonoBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 		Health eh = other.gameObject.GetComponent<Health>();
-		eh.AddjustCurrentHealth(-10); //* Time.DeltaTime;
+		if (GameObject.FindGameObjectWithTag("Eney") == true) {
+			eh.AddjustCurrentHealth(-10); //* Time.DeltaTime;
+		}
+		else
+			eh.AddjustCurrentHealth(0);
 	}
 
 	private void Attacker() {
@@ -44,9 +48,9 @@ public class Attack : MonoBehaviour {
 		float direction = Vector3.Dot(dir, transform.forward);
 
 
-		if(distance < 2.5f) {
+		if(distance < 2.5f && GameObject.FindGameObjectWithTag("Eney")) {
 			if(direction > 0) { 
-				Health eh = (Health)target.GetComponent("Sphere");
+				Health eh = (Health)target.GetComponent("Enemy");
 				eh.AddjustCurrentHealth(-10);
 			}
 		}

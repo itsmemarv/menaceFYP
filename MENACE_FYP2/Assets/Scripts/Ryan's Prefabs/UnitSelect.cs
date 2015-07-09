@@ -3,6 +3,7 @@ using System.Collections;
 
 public class UnitSelect : MonoBehaviour {
 
+	public Color originalColor;
 	public bool isSelected;
 	
 	private void OnSelected()
@@ -14,6 +15,6 @@ public class UnitSelect : MonoBehaviour {
 	private void OnUnselected()
 	{
 		isSelected = false;
-		GetComponent<Renderer>().material.color = Color.white;
+		GetComponent<Renderer>().material.color = originalColor;
 	}
 }
