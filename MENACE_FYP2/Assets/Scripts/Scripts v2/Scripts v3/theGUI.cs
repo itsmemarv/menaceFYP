@@ -23,24 +23,29 @@ public class theGUI : MonoBehaviour {
 
 					// End Turn
 					gameObject.GetComponent<theUnit> ().endTurn = true;
-
-					// Reset Selected Tile and Unit
+					
+					// Reset REGION
+					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript>().isSelected = false;
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion = null;
+					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().currentRegion = null;
+					
+					// Reset UNIT
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().previousUnit = gameObject.GetComponent<theUnit> ().theMap.GetComponent<Map> ().selectedUnit;
 					gameObject.GetComponent<theUnit> ().beingControlled = false;
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedUnit = null;
-						
-					// Turn-Base
+					
+					// Turn-Based
 					if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 1) {
 						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 2;
 					} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 2) {
+						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().TURNSLEFT -= 1;
 						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 1;
 					}
-
+					
 					// Reset Locks
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = false;
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().TURNSLEFT -= 1;
+					
 					Debug.Log ("Moved/Attacked, End Turn");
 				}
 				else{
