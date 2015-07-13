@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour {
 	public Transform projectile;
 	public float speed;
 	private Vector3 moveVec;
-	private float startZ;
+//	private float startZ;
 	private float actualDist;
 	private Vector2 dragStartPos;
 
@@ -51,8 +51,8 @@ public class CameraController : MonoBehaviour {
 				break;
 				
 			case TouchPhase.Moved:
-				Vector3 pos = Camera.main.ScreenToWorldPoint(touch.position);
-				pos.z = startZ;
+//				Vector3 pos = Camera.main.ScreenToWorldPoint(touch.position);
+				//pos.z = startZ;
 				projectile.position = Camera.main.ScreenToWorldPoint(touch.position);
 				//here i gave condition to move camera with in required position 
 				if(projectile.position.z >= -150 && projectile.position.z <= 100)
@@ -67,7 +67,7 @@ public class CameraController : MonoBehaviour {
 				break;
 			}
 			projectile.Translate(moveVec * Time.deltaTime);
-			Vector3 val = moveVec * Time.deltaTime;
+//			Vector3 val = moveVec * Time.deltaTime;
 		}
 
 		//ZOOM

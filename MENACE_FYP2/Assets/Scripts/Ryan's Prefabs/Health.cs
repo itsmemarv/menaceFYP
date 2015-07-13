@@ -6,12 +6,12 @@ public class Health : MonoBehaviour {
 	public int curHealth = 1000;
 	
 	public float healthBarLength;
-	private GameObject[] GoingToDestroy;
+//	private GameObject[] GoingToDestroy;
 	
 	void Start () {
 		healthBarLength = Screen.width / 8;
-		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("SelectableUnits");
-		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("Eney");
+//		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("SelectableUnits");
+//		this.GoingToDestroy = GameObject.FindGameObjectsWithTag("Eney");
 	}
 	
 	

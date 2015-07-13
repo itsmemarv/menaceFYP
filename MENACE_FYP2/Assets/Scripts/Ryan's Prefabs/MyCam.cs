@@ -2,13 +2,13 @@
 using System.Collections;
 
 public class MyCam : MonoBehaviour {
-	private Vector3 ResetCamera;
+//	private Vector3 ResetCamera;
 	private Vector3 Origin;
 	private Vector3 Diference;
 	private bool Drag = false;
 	
 	void Start () {
-		ResetCamera = Camera.main.transform.position;
+//		ResetCamera = Camera.main.transform.position;
 	}
 	void LateUpdate () {
 
@@ -35,10 +35,10 @@ public class MyCam : MonoBehaviour {
 
 	void Scroll ()
 	{
-		float mousePosX = Input.mousePosition.x;
-		float mousePosY = Input.mousePosition.y;
-		int scrollDistance = 5;
-		float scrollSpeed = 70;
+		//float mousePosX = Input.mousePosition.x;
+		//float mousePosY = Input.mousePosition.y;
+		//int scrollDistance = 5;
+		//float scrollSpeed = 70;
 		const float orthographicSizeMin = 8f;
 		const float orthographicSizeMax = 256f;
 		

@@ -14,8 +14,8 @@ public class UnitDivision : MonoBehaviour {
 	public GameObject Soldier;
 	public Formation formation;
 	public enum Formation {Square, Rectamgle, Triangle}
-	GameObject[] gridArray = new GameObject[64];
-	List<GameObject> members = new List<GameObject>();
+//	GameObject[] gridArray = new GameObject[64];
+//	List<GameObject> members = new List<GameObject>();
 	void Start () {
 
 	}
@@ -79,12 +79,12 @@ public class UnitDivision : MonoBehaviour {
 		//calculate dist between unit and newPos, get direction all move acc to dist and dir
 	}
 
-	public void OnMouseClick()
+	/*public void OnMouseClick()
 	{
 		foreach(GameObject item in gridArray)
 		{
 			//member.Select(); // Highlight unit(s)
 		}
-	}
+	}*/
 
 }
