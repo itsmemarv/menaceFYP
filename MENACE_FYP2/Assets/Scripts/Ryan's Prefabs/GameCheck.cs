@@ -62,6 +62,7 @@ public class GameCheck : MonoBehaviour {
 			returnNum.GetComponent<SceneController>().Region_CurrentRegion = null;
 			returnNum.GetComponent<SceneController>().GameMap = null;
 			returnNum.GetComponent<SceneController>().inBattleScene = false;
+			Application.LoadLevel(0);
 		}
 		else if (enemyCount > 1 && friendlyCount == 0 && defeatFlag == false)
 		{

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class theGUI : MonoBehaviour {
 
@@ -16,11 +17,11 @@ public class theGUI : MonoBehaviour {
 	void OnGUI(){
 		// Make a background box
 		if (gameObject.GetComponent<theUnit> ().beingControlled == true) {
-			GUI.Box (new Rect (10, 10, 140, 150), "" + gameObject.tag); //+ "'s Unit " + gameObject.GetComponent<theUnit> ().ID);
+			GUI.Box (new Rect (Screen.width*0.045f, Screen.height*0.4f, 140, 150), "" + gameObject.tag); //+ "'s Unit " + gameObject.GetComponent<theUnit> ().ID);
 			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion != null) {
 				if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == false
 					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
-					if (GUI.Button (new Rect (20, 40, 120, 20), "Move/End")) {
+					if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.45f, 120, 20), "Move/End")) {
 						if (gameObject.GetComponent<theUnit> ().MoveToSelectedTile () == true) {
 
 							Reset ();
@@ -31,7 +32,7 @@ public class theGUI : MonoBehaviour {
 				} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true
 					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner == gameObject.GetComponent<theUnit> ().ID
 					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
-					if (GUI.Button (new Rect (20, 40, 120, 20), "Move/End")) {
+					if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.45f, 120, 20), "Move/End")) {
 						if (gameObject.GetComponent<theUnit> ().MoveToSelectedTile () == true) {
 									
 							Reset ();
@@ -42,7 +43,7 @@ public class theGUI : MonoBehaviour {
 				} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true
 					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner != gameObject.GetComponent<theUnit> ().ID
 					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
-					if (GUI.Button (new Rect (20, 40, 120, 20), "Attack/End")) {
+					if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.45f, 120, 20), "Attack/End")) {
 						if (gameObject.GetComponent<theUnit> ().AttackSelectedTile () == true) {
 						
 							Reset ();
@@ -52,31 +53,31 @@ public class theGUI : MonoBehaviour {
 					}
 				}
 			} else if(gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion == null) {
-					if (GUI.Button (new Rect (20, 40, 120, 20), "Train")) {
+				if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.45f, 120, 20), "Train")) {
 						gameObject.GetComponent<theUnit>().TrainUnit();
 					}
 			}
 			// Lock and Unlock Selected Unit
 			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit == false) {
-				if (GUI.Button (new Rect (20, 80, 120, 20), "Lock Unit")) {
+				if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.485f, 120, 20), "Lock Unit")) {
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = true;
 				}
 			} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit == true) {
-				if (GUI.Button (new Rect (20, 80, 120, 20), "Unlock Unit")) {
+				if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.485f, 120, 20), "Unlock Unit")) {
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = false;
 				}
 			}
 
-			//Lock and Unlock Selected Tile
-			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile == false) {
-				if (GUI.Button (new Rect (20, 120, 120, 20), "Lock Tile")) {
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = true;
-				}
-			} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile == true) {
-				if (GUI.Button (new Rect (20, 120, 120, 20), "Unlock Tile")) {
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
-				}
-			}
+//			//Lock and Unlock Selected Tile
+//			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile == false) {
+//				if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.52f, 120, 20), "Lock Tile")) {
+//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = true;
+//				}
+//			} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile == true) {
+//				if (GUI.Button (new Rect (Screen.width*0.05f, Screen.height*0.52f, 120, 20), "Unlock Tile")) {
+//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
+//				}
+//			}
 		}
 	}
 

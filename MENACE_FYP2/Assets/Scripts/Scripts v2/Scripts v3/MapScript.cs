@@ -86,17 +86,17 @@ public class MapScript : MonoBehaviour {
 				UpdateTileOwnership (unit);
 			}
 
-			if (lockSelectedUnit == false) {
-				SelectUnit ();
-			} else {
+			if(StartOfGame == false){
+				if (lockSelectedUnit == false) {
+					SelectUnit ();
+				} else {
 
+				}
 			}
 			
 			if (selectedUnit != null && lockSelectedUnit == true) {
 				if (lockSelectedMapTile == false) {
 					SelectRegion (); 
-				} else {
-
 				}
 			}
 			if (selectedUnit != null) {
@@ -108,8 +108,11 @@ public class MapScript : MonoBehaviour {
 					}
 				}
 			}
-			
-			checkNeighbors ();
+
+			//if(selectedUnit != null){
+				checkNeighbors ();
+			//}
+		
 			if (Turns <= 0 || (player2counter <= 0 || player1counter <= 0) && StartOfGame == false)
 			{
 				EndOfGame = true;
@@ -134,44 +137,46 @@ public class MapScript : MonoBehaviour {
 		if (regionList.Count > 0) {
 			if (Input.GetMouseButtonDown (0)) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
+				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray,Mathf.Infinity); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
 				//			Debug.Log (hitInfo.transform.gameObject.name);
-				foreach (GameObject theRegion in regionList) {
-					if (theRegion.name == hitInfo.transform.gameObject.name) {
-						selectedRegion = hitInfo.transform.gameObject;
-						if (StartOfGame == true) { // Instantiate first 2 units
-							if (selectedRegion.GetComponent<RegionScript> ().hasUnit == false) { // to prevent starting on the same regionee
-								GameObject theUnit = (GameObject)Instantiate (Unit);
-								//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
-								theUnit.transform.position = selectedRegion.transform.position;
-								theUnit.GetComponent<theUnit> ().posX = (float)theUnit.transform.position.x;
-								theUnit.GetComponent<theUnit> ().posY = (float)theUnit.transform.position.y;
-								theUnit.GetComponent<theUnit> ().ID = unitList.Count + 1;	// should start at 0;
-								if(theUnit.GetComponent<theUnit> ().ID == 1)
-								{
-									player1counter ++;
-									theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player1counter) + 1;
-								} else if(theUnit.GetComponent<theUnit> ().ID == 2)
-								{
-									player2counter ++;
-									theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player2counter) + 1;
+				if(hitInfo){
+					foreach (GameObject theRegion in regionList) {
+						if (theRegion.name == hitInfo.transform.gameObject.name) {
+							selectedRegion = hitInfo.transform.gameObject;
+							if (StartOfGame == true) { // Instantiate first 2 units
+								if (selectedRegion.GetComponent<RegionScript> ().hasUnit == false) { // to prevent starting on the same regionee
+									GameObject theUnit = (GameObject)Instantiate (Unit);
+									//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
+									theUnit.transform.position = selectedRegion.transform.position;
+									theUnit.GetComponent<theUnit> ().posX = (float)theUnit.transform.position.x;
+									theUnit.GetComponent<theUnit> ().posY = (float)theUnit.transform.position.y;
+									theUnit.GetComponent<theUnit> ().ID = unitList.Count + 1;	// should start at 0;
+									if(theUnit.GetComponent<theUnit> ().ID == 1)
+									{
+										player1counter ++;
+										theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player1counter) + 1;
+									} else if(theUnit.GetComponent<theUnit> ().ID == 2)
+									{
+										player2counter ++;
+										theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player2counter) + 1;
+									}
+									theUnit.transform.parent = controller.transform;
+									controller.GetComponent<SceneController> ().objectsInHierarchy.Add (theUnit);
+									selectedRegion.GetComponent<RegionScript> ().unitOnRegion = theUnit;
+									unitList.Add (theUnit);
+									selectedRegion.GetComponent<RegionScript> ().hasUnit = true;
+									selectedRegion = null;
 								}
-								theUnit.transform.parent = controller.transform;
-								controller.GetComponent<SceneController> ().objectsInHierarchy.Add (theUnit);
-								selectedRegion.GetComponent<RegionScript> ().unitOnRegion = theUnit;
-								unitList.Add (theUnit);
-								selectedRegion.GetComponent<RegionScript> ().hasUnit = true;
-								selectedRegion = null;
+							} else {
+								if(selectedRegion != currentRegion)
+									selectedRegion.GetComponent<RegionScript> ().isSelected = true;
+								else
+									selectedRegion = null;
 							}
-						} else {
-							if(selectedRegion != currentRegion)
-								selectedRegion.GetComponent<RegionScript> ().isSelected = true;
-							else
-								selectedRegion = null;
+						} else if (hitInfo.transform.gameObject.name != theRegion.name) {
+							//Debug.Log ("not Selected");
+							theRegion.GetComponent<RegionScript> ().isSelected = false;
 						}
-					} else if (hitInfo.transform.gameObject.name != theRegion.name) {
-						//Debug.Log ("not Selected");
-						theRegion.GetComponent<RegionScript> ().isSelected = false;
 					}
 				}
 			}
@@ -182,7 +187,7 @@ public class MapScript : MonoBehaviour {
 		//Debug.Log ("Selecting a UNIT");
 		if (unitList.Count > 0) {
 			if (Input.GetMouseButtonDown (0)) {
-				Debug.Log ("Click!");
+				Debug.Log ("UnitClick!");
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				RaycastHit hitInfo;
 			
@@ -239,8 +244,14 @@ public class MapScript : MonoBehaviour {
 								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
 							}
 						} else if (hitInfo.collider.tag != "unit_Player1") {
-							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
-							selectedUnit = null;
+							if(selectedUnit != null){
+								selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+								foreach(GameObject zRegion in regionList){
+									zRegion.GetComponent<RegionScript>().canMoveTo = false;
+								}
+								selectedUnit = null;
+
+							}
 						}
 					}
 				break;
@@ -259,8 +270,14 @@ public class MapScript : MonoBehaviour {
 								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
 							}
 						} else if (hitInfo.collider.tag != "unit_Player2") {
-							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
-							selectedUnit = null;
+							if(selectedUnit != null){
+								selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+								foreach(GameObject zRegion in regionList){
+									zRegion.GetComponent<RegionScript>().canMoveTo = false;
+								}
+								selectedUnit = null;
+
+							}
 						}
 					}
 				break;
@@ -406,39 +423,40 @@ public class MapScript : MonoBehaviour {
 	
 	void OnGUI(){
 		if (unitList.Count < 2) {
-			GUI.Box (new Rect (Screen.width * 0.40f, 0, 180, 25), "Players, Choose your Region!");
+			GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 25), "Players, Choose your Region!");
 		} else if (EndOfGame == true){
 			if(player1counter > player2counter){
-				GUI.Box (new Rect (Screen.width * 0.45f, 0, 100, 25), "Player 1 WINS!");
+				GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 25), "Player 1 WINS!");
 			} else if(player1counter < player2counter){
-				GUI.Box (new Rect (Screen.width * 0.45f, 0, 100, 25), "Player 2 WINS!");
+				GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 25), "Player 2 WINS!");
 			} else if(player1counter == player2counter){
-				GUI.Box (new Rect (Screen.width * 0.45f, 0, 100, 25), "DRAW!!");
+				GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 25), "DRAW!!");
 			}
 		} else {
-			GUI.Box (new Rect (Screen.width * 0.45f, 0, 100, 50), "Player " + whosPlaying + "'s Turn");
-			GUI.Label (new Rect (Screen.width * 0.46f, 20, 100, 25), "Turns Left: " + Turns);
+			if(whosPlaying == 1){
+				GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 50), "BLUE's Turn");
+			}else if( whosPlaying == 2){
+				GUI.Box (new Rect (Screen.width * 0.45f, 0, 180, 50), "RED's Turn");
+			}
+			GUI.Label (new Rect (Screen.width * 0.476f, 20, 180, 25), "Turns Left: " + Turns);
+
+			if(currentRegion != null){
+				GUI.Box (new Rect (Screen.width * 0.8f, Screen.height*0.3f, 200, 120), "Current Region Info");
+				GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.33f, 200, 50), "Region Owner: " + currentRegion.GetComponent<RegionScript>().region_Owner);
+				//GUI.Label (new Rect (Screen.width * 0.8f, 50, 200, 50), "Pos (" + (float)currentRegion.GetComponent<RegionScript>().regionX + ", " +  (float)currentRegion.GetComponent<RegionScript>().regionY + ")");
+				GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.36f, 200, 50), "Number of Units: " + currentRegion.GetComponent<RegionScript>().unitOnRegion.GetComponent<theUnit>().numberOfUnits);
+				GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.39f, 200, 50), "Trainable Units: " + currentRegion.GetComponent<RegionScript>().unitOnRegion.GetComponent<theUnit>().numberOfTrainableUnit);
+			}
+			if(selectedRegion != null && lockSelectedUnit == true)
+			{
+				GUI.Box (new Rect (Screen.width * 0.8f, Screen.height*0.45f, 200, 120), "Selected Region Info");
+				GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.48f, 200, 50), "Region Owner: " + selectedRegion.GetComponent<RegionScript>().region_Owner);
+				if(selectedRegion.GetComponent<RegionScript>().unitOnRegion != null){
+					GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.51f, 200, 50), "Number of Units: " + selectedRegion.GetComponent<RegionScript>().unitOnRegion.GetComponent<theUnit>().numberOfUnits);
+					GUI.Label (new Rect (Screen.width * 0.826f, Screen.height*0.54f, 200, 50), "Trainable Units: " + selectedRegion.GetComponent<RegionScript>().unitOnRegion.GetComponent<theUnit>().numberOfTrainableUnit);
+				}
+			}
+			GUI.Box (new Rect (Screen.width * 0.37f, 100, 500, 25), "REMEMBER TO *LOCK UNIT* BEFORE MOVING/ATTACKING");
 		}
-		
-		//		GUI.Box(new Rect(10,10, 180,110), "What do you want to do?");
-		//		if(chooseMove == false && (chooseTrain || !chooseTrain)){
-		//		chooseMove =  GUI.Toggle (new Rect (40, 40, 50, 20), chooseMove, "Move");
-		//
-		//				if(chooseTrain == true)
-		//					chooseTrain = false;
-		//		}
-		//
-		//		if(chooseTrain == false && (chooseTrain || chooseTrain)){
-		//		chooseTrain = GUI.Toggle (new Rect (110, 40, 50, 20), chooseTrain, "Train");
-		//			if(chooseMove == true)
-		//				chooseMove = false;
-		//		}
-		//
-		//		if(GUI.Button(new Rect(20,80,160,20), "Ok")) {
-		//			if(chooseMove && !chooseTrain)
-		//				theChoice = turn_Choice.MOVE;
-		//			else if(chooseTrain && !chooseMove)
-		//				theChoice = turn_Choice.TRAIN;
-		//		}
 	}
 }
