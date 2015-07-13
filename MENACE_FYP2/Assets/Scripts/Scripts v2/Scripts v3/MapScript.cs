@@ -16,6 +16,7 @@ public class MapScript : MonoBehaviour {
 	public GameObject controller;
 	
 	public GameObject mapParent;
+
 	// Region Variables
 	public List<GameObject> regionList = new List<GameObject>();
 	public GameObject regionParent;
@@ -30,7 +31,6 @@ public class MapScript : MonoBehaviour {
 	
 	public GameObject currentRegion; 			// the region where the selected unit is on
 	public GameObject selectedRegion;			// clicked region	
-	//public GameObject previousRegion;
 	
 	public int whosPlaying;						// for turn-based
 	public bool lockSelectedUnit; 				// to prevent selecting other unit
@@ -40,26 +40,13 @@ public class MapScript : MonoBehaviour {
 	public bool StartOfGame;
 	public bool QueueUnitTags;
 	
-	public int TURNSLEFT;
-	public bool EndOfGame;
+	public int Turns;
 	public int player1counter;
 	public int player2counter;
+	public bool EndOfGame;
 	public bool endCount;
-	
-	//	public bool chooseMove;
-	//	public bool chooseTrain;
-	
-	//	turn_Choice theChoice;
-	
-	
-	void Awake(){
-		//		if (MapControl == null) {
-		//			DontDestroyOnLoad (mapParent);
-		//			MapControl = this;
-		//		} else if(MapControl != this){
-		//			Destroy(mapParent);
-		//		}
-	}
+
+
 	// Use this for initialization
 	void Start () {
 		StartOfGame = true;
@@ -68,7 +55,7 @@ public class MapScript : MonoBehaviour {
 		lockSelectedUnit = false;
 		lockSelectedMapTile = false;
 		
-		TURNSLEFT = 12;
+		Turns = 12;
 		EndOfGame = false;
 		player1counter = 0;
 		player2counter = 0;
@@ -81,17 +68,7 @@ public class MapScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		//		foreach (GameObject units in unitList) {
-		//			if (!controller.GetComponent<SceneController>().inBattleScene) {
-		//				units.SetActive (true);
-		//			} else 
-		//		if (controller.GetComponent<SceneController>().inBattleScene) {
-		//				units.SetActive (false);
-		//			}
-		//		}
-		
-		
+
 		if (EndOfGame == false) {
 			if (unitList.Count < 2) { 
 				SelectRegion ();
@@ -108,13 +85,18 @@ public class MapScript : MonoBehaviour {
 			foreach (GameObject unit in unitList) {
 				UpdateTileOwnership (unit);
 			}
+
 			if (lockSelectedUnit == false) {
 				SelectUnit ();
+			} else {
+
 			}
 			
 			if (selectedUnit != null && lockSelectedUnit == true) {
 				if (lockSelectedMapTile == false) {
-					SelectRegion ();
+					SelectRegion (); 
+				} else {
+
 				}
 			}
 			if (selectedUnit != null) {
@@ -128,112 +110,160 @@ public class MapScript : MonoBehaviour {
 			}
 			
 			checkNeighbors ();
-			
-			if (TURNSLEFT <= 0)
+			if (Turns <= 0 || (player2counter <= 0 || player1counter <= 0) && StartOfGame == false)
 			{
 				EndOfGame = true;
 			}
 			
-		} else if (EndOfGame == true && endCount == false) {
-			foreach(GameObject myUnits in unitList)
-			{
-				if(myUnits.GetComponent<theUnit>().tag == "unit_Player1"){
-					player1counter++; 
-				}
-				else if(myUnits.GetComponent<theUnit>().tag == "unit_Player2"){
-					player2counter++; 
-				}
-			}
-			endCount = true;
 		}
+//		else if (EndOfGame == true && endCount == false) {
+//			foreach(GameObject myUnits in unitList)
+//			{
+//				if(myUnits.GetComponent<theUnit>().tag == "unit_Player1"){
+//					player1counter++; 
+//				}
+//				else if(myUnits.GetComponent<theUnit>().tag == "unit_Player2"){
+//					player2counter++; 
+//				}
+//			}
+//			endCount = true;
+//		}
 	}
 	
 	void SelectRegion(){
-		if (Input.GetMouseButtonDown (0)) {
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
-			//			Debug.Log (hitInfo.transform.gameObject.name);
-			foreach (GameObject theRegion in regionList)
-			{
-				if(hitInfo.transform.gameObject.name == theRegion.name)
-				{
-					selectedRegion = hitInfo.transform.gameObject;
-					if(StartOfGame == true) // Instantiate first 2 units 
-					{
-						if(selectedRegion.GetComponent<RegionScript>().hasUnit == false){ // to prevent starting on the same regionee
-							GameObject theUnit = (GameObject)Instantiate( Unit );
-							//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
-							theUnit.transform.position = selectedRegion.transform.position;
-							theUnit.GetComponent<theUnit>().posX = (float)theUnit.transform.position.x;
-							theUnit.GetComponent<theUnit>().posY = (float)theUnit.transform.position.y;
-							theUnit.GetComponent<theUnit>().ID = unitList.Count + 1;	// should start at 0;
-							theUnit.transform.parent = controller.transform;
-							controller.GetComponent<SceneController>().objectsInHierarchy.Add(theUnit);
-							selectedRegion.GetComponent<RegionScript>().unitOnRegion = theUnit;
-							unitList.Add (theUnit);
-							selectedRegion.GetComponent<RegionScript>().hasUnit = true;
+		if (regionList.Count > 0) {
+			if (Input.GetMouseButtonDown (0)) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
+				//			Debug.Log (hitInfo.transform.gameObject.name);
+				foreach (GameObject theRegion in regionList) {
+					if (theRegion.name == hitInfo.transform.gameObject.name) {
+						selectedRegion = hitInfo.transform.gameObject;
+						if (StartOfGame == true) { // Instantiate first 2 units
+							if (selectedRegion.GetComponent<RegionScript> ().hasUnit == false) { // to prevent starting on the same regionee
+								GameObject theUnit = (GameObject)Instantiate (Unit);
+								//theUnit.transform.position = new Vector3(selectedRegion.transform.position.x,selectedRegion.transform.position.y, -0.1f);
+								theUnit.transform.position = selectedRegion.transform.position;
+								theUnit.GetComponent<theUnit> ().posX = (float)theUnit.transform.position.x;
+								theUnit.GetComponent<theUnit> ().posY = (float)theUnit.transform.position.y;
+								theUnit.GetComponent<theUnit> ().ID = unitList.Count + 1;	// should start at 0;
+								if(theUnit.GetComponent<theUnit> ().ID == 1)
+								{
+									player1counter ++;
+									theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player1counter) + 1;
+								} else if(theUnit.GetComponent<theUnit> ().ID == 2)
+								{
+									player2counter ++;
+									theUnit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player2counter) + 1;
+								}
+								theUnit.transform.parent = controller.transform;
+								controller.GetComponent<SceneController> ().objectsInHierarchy.Add (theUnit);
+								selectedRegion.GetComponent<RegionScript> ().unitOnRegion = theUnit;
+								unitList.Add (theUnit);
+								selectedRegion.GetComponent<RegionScript> ().hasUnit = true;
+								selectedRegion = null;
+							}
+						} else {
+							if(selectedRegion != currentRegion)
+								selectedRegion.GetComponent<RegionScript> ().isSelected = true;
+							else
+								selectedRegion = null;
 						}
-					}
-					else{
-						selectedRegion.GetComponent<RegionScript> ().isSelected = true;
+					} else if (hitInfo.transform.gameObject.name != theRegion.name) {
+						//Debug.Log ("not Selected");
+						theRegion.GetComponent<RegionScript> ().isSelected = false;
 					}
 				}
-				else if (hitInfo.transform.gameObject.name != theRegion.name)
-				{
-					//Debug.Log ("not Selected");
-					theRegion.GetComponent<RegionScript>().isSelected = false;
-				}
-				
 			}
 		}
 	}
 	
 	void SelectUnit(){
 		//Debug.Log ("Selecting a UNIT");
-		if (Input.GetMouseButtonDown (0)) {
-			Debug.Log ("Click!");
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit hitInfo;
+		if (unitList.Count > 0) {
+			if (Input.GetMouseButtonDown (0)) {
+				Debug.Log ("Click!");
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit hitInfo;
 			
-			if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity)) {
-				if (whosPlaying == 1) {
-					if (hitInfo.collider.tag == "unit_Player1") {
-						if(selectedUnit != null){
-							selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
-							selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
-							selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+//				if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity)) {
+//					if (whosPlaying == 1) {
+//						if (hitInfo.collider.tag == "unit_Player1") {
+//							if (selectedUnit != null) {
+//								selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
+//								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+//								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+//							
+//								//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
+//								//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+//							} else if (selectedUnit == null) {
+//								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+//								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+//							}
+//						} else if (hitInfo.collider.tag != "unit_Player1") {
+//							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+//							selectedUnit = null;
+//						}
+//					} else if (whosPlaying == 2) {
+//						if (hitInfo.collider.tag == "unit_Player2") {
+//							if (selectedUnit != null) {
+//								//selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
+//								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+//								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+//							
+//								//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
+//								//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+//							} else if (selectedUnit == null) {
+//								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+//								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+//							}
+//						} else if (hitInfo.collider.tag != "unit_Player2") {
+//							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+//							selectedUnit = null;
+//						}
+//					}
+				switch (whosPlaying)
+				{
+				case 1:
+					if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity)) {
+						if (hitInfo.collider.tag == "unit_Player1") {
+							if (selectedUnit != null) {
+								selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
+								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
 							
-							//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
-							//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+								//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
+								//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+							} else if (selectedUnit == null) {
+								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+							}
+						} else if (hitInfo.collider.tag != "unit_Player1") {
+							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+							selectedUnit = null;
 						}
-						else if(selectedUnit == null)
-						{
-							selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
-							selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
-						}
-					} else if (hitInfo.collider.tag != "unit_Player1"){
-						selectedUnit.GetComponent<theUnit> ().beingControlled = false;
-						selectedUnit = null;
 					}
-				} else if (whosPlaying == 2) {
-					if (hitInfo.collider.tag == "unit_Player2") {
-						if(selectedUnit != null){
-							//selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
-							selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
-							selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+				break;
+				case 2:
+					if (Physics.Raycast (ray, out hitInfo, Mathf.Infinity)) {
+						if (hitInfo.collider.tag == "unit_Player2") {
+							if (selectedUnit != null) {
+								selectedUnit.GetComponent<theUnit> ().beingControlled = false; // old selected unit set control to false
+								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
 							
-							//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
-							//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+								//Debug.Log ("X: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileX + " Y: " + theMap.GetComponent<Map> ().selectedMapTile.GetComponent<Tile> ().tileY);
+								//Debug.Log ("OrigX: " + tempGO.GetComponent<Tile> ().tileX + " OrigY: " + tempGO.GetComponent<Tile> ().tileY);
+							} else if (selectedUnit == null) {
+								selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
+								selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
+							}
+						} else if (hitInfo.collider.tag != "unit_Player2") {
+							selectedUnit.GetComponent<theUnit> ().beingControlled = false;
+							selectedUnit = null;
 						}
-						else if(selectedUnit == null)
-						{
-							selectedUnit = hitInfo.transform.gameObject; 				   // the new selected Unit
-							selectedUnit.GetComponent<theUnit> ().beingControlled = true;  // new selected unit set control to true
-						}
-					} else if (hitInfo.collider.tag != "unit_Player2"){
-						selectedUnit.GetComponent<theUnit> ().beingControlled = false;
-						selectedUnit = null;
 					}
+				break;
 				}
 			}
 		}
@@ -247,17 +277,19 @@ public class MapScript : MonoBehaviour {
 			if(unit.GetComponent<theUnit>().ID <= dividedListCount)
 			{
 				unit.tag = "unit_Player1";
+				//player1counter++;
 			}
 			else if(unit.GetComponent<theUnit>().ID > dividedListCount)
 			{
 				unit.tag = "unit_Player2";
+				//player2counter++;
 			}
 		}
 	}
 	
 	void UpdateTileOwnership(GameObject goUnit){
 		foreach (GameObject goTile in regionList) {
-			if (goTile.GetComponent<RegionScript>().region_ID == 0) {
+			if (goTile.GetComponent<RegionScript>().region_Owner == 0) {
 				if (goTile.GetComponent<RegionScript> ().regionX == goUnit.GetComponent<theUnit> ().posX && goTile.GetComponent<RegionScript> ().regionY == goUnit.GetComponent<theUnit> ().posY) {
 					goTile.GetComponent<RegionScript> ().region_Owner = goUnit.GetComponent<theUnit>().ID;
 				}
@@ -385,7 +417,7 @@ public class MapScript : MonoBehaviour {
 			}
 		} else {
 			GUI.Box (new Rect (Screen.width * 0.45f, 0, 100, 50), "Player " + whosPlaying + "'s Turn");
-			GUI.Label (new Rect (Screen.width * 0.46f, 20, 100, 25), "Turns Left: " + TURNSLEFT);
+			GUI.Label (new Rect (Screen.width * 0.46f, 20, 100, 25), "Turns Left: " + Turns);
 		}
 		
 		//		GUI.Box(new Rect(10,10, 180,110), "What do you want to do?");

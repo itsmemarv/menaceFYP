@@ -7,11 +7,8 @@ public class RegionScript : MonoBehaviour {
 	public static RegionScript RegionControl;
 	//GameObject theMap;
 	public int region_Owner;
-	public int region_ID;
 
 	public bool isSelected;
-	public Color origColor;
-
 	public bool canMoveTo;
 	public bool hasUnit;
 
@@ -19,8 +16,8 @@ public class RegionScript : MonoBehaviour {
 	public float regionY;
 
 	public GameObject unitOnRegion;
-	// Use this for initialization
-
+	public Color origColor;
+	
 	void Awake(){
 		//if (RegionControl == null) {
 			//DontDestroyOnLoad (gameObject);
@@ -29,29 +26,32 @@ public class RegionScript : MonoBehaviour {
 		//	Destroy(gameObject);
 		//}
 	}
+
+	// Use this for initialization
 	void Start () {
 		//theMap = GameObject.FindGameObjectWithTag ("MAP");
 		regionX = gameObject.transform.position.x;
 		regionY = gameObject.transform.position.y;
 		origColor = gameObject.GetComponent<SpriteRenderer> ().material.color;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (isSelected == true) {
-			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
-		} else {
-			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
-		}
-
+//		if (isSelected == true) {
+//			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
+//		} else {
+//			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+//		}
+		gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
 		if (canMoveTo == true) {
-			gameObject.GetComponent<SpriteRenderer>().material.color = Color.black;
+			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.black;
 			if (isSelected == true) {
-				gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
+				//gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
+				gameObject.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.0f,0.0f,0.0f,0.5f));
+			} else {
+				gameObject.GetComponent<SpriteRenderer> ().material.color = Color.black;
 			}
-				else{
-				gameObject.GetComponent<SpriteRenderer>().material.color = Color.black;
-				}
 		}
 	}
 

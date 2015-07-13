@@ -17,62 +17,45 @@ public class theGUI : MonoBehaviour {
 		// Make a background box
 		if (gameObject.GetComponent<theUnit> ().beingControlled == true) {
 			GUI.Box (new Rect (10, 10, 140, 150), "" + gameObject.tag); //+ "'s Unit " + gameObject.GetComponent<theUnit> ().ID);
+			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion != null) {
+				if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == false
+					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
+					if (GUI.Button (new Rect (20, 40, 120, 20), "Move/End")) {
+						if (gameObject.GetComponent<theUnit> ().MoveToSelectedTile () == true) {
 
-			if (GUI.Button (new Rect (20, 40, 120, 20), "Move/Attack/End")) {
-				if (gameObject.GetComponent<theUnit> ().MoveToSelectedTile () == true) {
-
-					// End Turn
-					gameObject.GetComponent<theUnit> ().endTurn = true;
-					
-					// Reset REGION
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript>().isSelected = false;
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion = null;
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().currentRegion = null;
-					
-					// Reset UNIT
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().previousUnit = gameObject.GetComponent<theUnit> ().theMap.GetComponent<Map> ().selectedUnit;
-					gameObject.GetComponent<theUnit> ().beingControlled = false;
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedUnit = null;
-					
-					// Turn-Based
-					if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 1) {
-						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 2;
-					} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 2) {
-						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().TURNSLEFT -= 1;
-						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 1;
+							Reset ();
+							
+							Debug.Log ("Moved, End Turn");
+						}
 					}
-					
-					// Reset Locks
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = false;
-					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
-					
-					Debug.Log ("Moved/Attacked, End Turn");
+				} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true
+					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner == gameObject.GetComponent<theUnit> ().ID
+					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
+					if (GUI.Button (new Rect (20, 40, 120, 20), "Move/End")) {
+						if (gameObject.GetComponent<theUnit> ().MoveToSelectedTile () == true) {
+									
+							Reset ();
+									
+							Debug.Log ("Moved, End Turn");
+						}
+					}
+				} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true
+					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner != gameObject.GetComponent<theUnit> ().ID
+					&& gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().canMoveTo == true) {
+					if (GUI.Button (new Rect (20, 40, 120, 20), "Attack/End")) {
+						if (gameObject.GetComponent<theUnit> ().AttackSelectedTile () == true) {
+						
+							Reset ();
+						
+							Debug.Log ("Attacked, End Turn");
+						}
+					}
 				}
-				else{
-					// End Turn
-//					gameObject.GetComponent<theUnit> ().endTurn = true;
-//					
-//					// Reset Selected Tile and Unit
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion = null;
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().currentRegion = null;
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().previousUnit = gameObject.GetComponent<theUnit> ().theMap.GetComponent<Map> ().selectedUnit;
-//					gameObject.GetComponent<theUnit> ().beingControlled = false;
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedUnit = null;
-//					
-//					// Turn-Base
-//					if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 1) {
-//						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 2;
-//					} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 2) {
-//						gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 1;
-//					}
-//					
-//					// Reset Locks
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = false;
-//					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
-//					Debug.Log ("End Turn");
-				}
+			} else if(gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion == null) {
+					if (GUI.Button (new Rect (20, 40, 120, 20), "Train")) {
+						gameObject.GetComponent<theUnit>().TrainUnit();
+					}
 			}
-
 			// Lock and Unlock Selected Unit
 			if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit == false) {
 				if (GUI.Button (new Rect (20, 80, 120, 20), "Lock Unit")) {
@@ -94,9 +77,35 @@ public class theGUI : MonoBehaviour {
 					gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
 				}
 			}
-
-		} else {
-			
 		}
+	}
+
+	void Reset(){
+		// End Turn
+		gameObject.GetComponent<theUnit> ().endTurn = true;
+		
+		// Reset REGION
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript>().isSelected = false;
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedRegion = null;
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().currentRegion = null;
+		
+		// Reset UNIT
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().previousUnit = gameObject.GetComponent<theUnit> ().theMap.GetComponent<Map> ().selectedUnit;
+		gameObject.GetComponent<theUnit> ().beingControlled = false;
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().selectedUnit = null;
+		
+		// Turn-Based
+		if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 1) {
+			gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 2;
+		} else if (gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying == 2) {
+			gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().Turns -= 1;
+			gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().whosPlaying = 1;
+		}
+		
+		// Reset LOCKS
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedUnit = false;
+		gameObject.GetComponent<theUnit> ().theMap.GetComponent<MapScript> ().lockSelectedMapTile = false;
+
+
 	}
 }
