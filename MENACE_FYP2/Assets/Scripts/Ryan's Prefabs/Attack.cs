@@ -34,7 +34,7 @@ public class Attack : MonoBehaviour {
 	{
 		Health eh = other.gameObject.GetComponent<Health>();
 		if (other.gameObject.tag == "Eney") {
-			eh.AddjustCurrentHealth(-1000); //* Time.DeltaTime;
+			eh.AddjustCurrentHealth(-100); //* Time.DeltaTime;
 		}
 	}
 
@@ -47,10 +47,10 @@ public class Attack : MonoBehaviour {
 
 
 		if(distance < 2.5f && GameObject.FindGameObjectWithTag("Eney")) {
-			if(direction > 0) { 
+			//if(direction > 0) { 
 				Health eh = (Health)target.GetComponent("Enemy");
-				eh.AddjustCurrentHealth(-1000);
-			}
+				eh.AddjustCurrentHealth(-100);
+			//}
 		}
 	}
 }

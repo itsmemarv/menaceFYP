@@ -161,79 +161,80 @@ public class theUnit : MonoBehaviour {
 		if (theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().hasUnit == true && // Tile has own Unit
 			theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().region_Owner != gameObject.GetComponent<theUnit> ().ID) {
 			Debug.Log ("HAS UNIT && DIFFERENT OWNER!! ATTACK!!");
-//			sceneController.GetComponent<SceneController> ().Player1_Unit = gameObject;
-//			sceneController.GetComponent<SceneController> ().Player2_Unit = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion;
-//			sceneController.GetComponent<SceneController> ().Region_onPlay = theMap.GetComponent<MapScript> ().selectedRegion;
-//			sceneController.GetComponent<SceneController> ().inBattleScene = true;
-//			Application.LoadLevel (1);
+			sceneController.GetComponent<SceneController> ().Player1_Unit = gameObject;
+			sceneController.GetComponent<SceneController> ().Player2_Unit = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion;
+			sceneController.GetComponent<SceneController> ().Region_SelectedRegion = theMap.GetComponent<MapScript> ().selectedRegion;
+			sceneController.GetComponent<SceneController> ().Region_CurrentRegion = theMap.GetComponent<MapScript> ().currentRegion;
+			sceneController.GetComponent<SceneController> ().inBattleScene = true;
+			Application.LoadLevel (1);
 			
-			int rng;
-			rng =  Random.Range (1, 100);
-			Debug.Log ("RNG: " +rng);
-			// P1 == P2
-			if (gameObject.GetComponent<theUnit> ().numberOfUnits == theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
-				if (rng <= 50) { //P1 WIN
-					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
-					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
-					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
-					gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
-					if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
-						theMap.GetComponent<MapScript> ().player1counter ++;
-						theMap.GetComponent<MapScript> ().player2counter --;
-					}
-					else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
-						theMap.GetComponent<MapScript> ().player2counter ++;
-						theMap.GetComponent<MapScript> ().player1counter --;
-					}
-
-				} else if (rng > 50) { //P2 WIN
-					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
-					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
-					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
-					gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
-					if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
-						theMap.GetComponent<MapScript> ().player1counter ++;
-						theMap.GetComponent<MapScript> ().player2counter --;
-					}
-					else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
-						theMap.GetComponent<MapScript> ().player2counter ++;
-						theMap.GetComponent<MapScript> ().player1counter --;
-					}
-
-				}
-			}
-			
-			// P1 > P2
-			else if (gameObject.GetComponent<theUnit> ().numberOfUnits > theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
-				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
-				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
-				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
-				gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
-				if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
-					theMap.GetComponent<MapScript> ().player1counter ++;
-					theMap.GetComponent<MapScript> ().player2counter --;
-				}
-				else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
-					theMap.GetComponent<MapScript> ().player2counter ++;
-					theMap.GetComponent<MapScript> ().player1counter --;
-				}
-			}
-			
-			// P1 < P2
-			else if (gameObject.GetComponent<theUnit> ().numberOfUnits < theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
-				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
-				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
-				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
-				gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
-				if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
-					theMap.GetComponent<MapScript> ().player1counter ++;
-					theMap.GetComponent<MapScript> ().player2counter --;
-				}
-				else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
-					theMap.GetComponent<MapScript> ().player2counter ++;
-					theMap.GetComponent<MapScript> ().player1counter --;
-				}
-			}
+			//int rng;
+//			rng =  Random.Range (1, 100);
+//			Debug.Log ("RNG: " +rng);
+//			// P1 == P2
+//			if (gameObject.GetComponent<theUnit> ().numberOfUnits == theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
+//				if (rng <= 50) { //P1 WIN
+//					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+//					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+//					theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+//					gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
+//					if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
+//						theMap.GetComponent<MapScript> ().player1counter ++;
+//						theMap.GetComponent<MapScript> ().player2counter --;
+//					}
+//					else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
+//						theMap.GetComponent<MapScript> ().player2counter ++;
+//						theMap.GetComponent<MapScript> ().player1counter --;
+//					}
+//
+//				} else if (rng > 50) { //P2 WIN
+//					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+//					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+//					theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+//					gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
+//					if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
+//						theMap.GetComponent<MapScript> ().player1counter ++;
+//						theMap.GetComponent<MapScript> ().player2counter --;
+//					}
+//					else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
+//						theMap.GetComponent<MapScript> ().player2counter ++;
+//						theMap.GetComponent<MapScript> ().player1counter --;
+//					}
+//
+//				}
+//			}
+//			
+//			// P1 > P2
+//			else if (gameObject.GetComponent<theUnit> ().numberOfUnits > theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
+//				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+//				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+//				theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+//				gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
+//				if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
+//					theMap.GetComponent<MapScript> ().player1counter ++;
+//					theMap.GetComponent<MapScript> ().player2counter --;
+//				}
+//				else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
+//					theMap.GetComponent<MapScript> ().player2counter ++;
+//					theMap.GetComponent<MapScript> ().player1counter --;
+//				}
+//			}
+//			
+//			// P1 < P2
+//			else if (gameObject.GetComponent<theUnit> ().numberOfUnits < theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits) {
+//				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+//				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+//				theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+//				gameObject.GetComponent<theUnit> ().numberOfUnits = 1;
+//				if(theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 1){
+//					theMap.GetComponent<MapScript> ().player1counter ++;
+//					theMap.GetComponent<MapScript> ().player2counter --;
+//				}
+//				else if (theMap.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID == 2){
+//					theMap.GetComponent<MapScript> ().player2counter ++;
+//					theMap.GetComponent<MapScript> ().player1counter --;
+//				}
+//			}
 			
 			return true;
 

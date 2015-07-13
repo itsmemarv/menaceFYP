@@ -8,7 +8,8 @@ public class SceneController : MonoBehaviour {
 
 	public GameObject Player1_Unit;
 	public GameObject Player2_Unit;
-	public GameObject Region_onPlay;
+	public GameObject Region_SelectedRegion;
+	public GameObject Region_CurrentRegion;
 
 	public bool inBattleScene;
 

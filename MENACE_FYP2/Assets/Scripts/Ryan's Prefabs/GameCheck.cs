@@ -10,9 +10,13 @@ public class GameCheck : MonoBehaviour {
 	private bool defeatFlag = false;
 	private bool victoryFlag = false;
 	private bool washFlag = false;
+
+	//Texture2D tex = new ;
+	public GameObject returnNum;
+
 	// Use this for initialization
 	void Start () {
-
+		returnNum = GameObject.Find("SceneController");
 	}
 	
 	// Update is called once per frame
@@ -35,16 +39,60 @@ public class GameCheck : MonoBehaviour {
 		{
 			Debug.Log("Victory");
 			victoryFlag = true;
+			//friendlyCount = 
+				returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits = friendlyCount;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits);
+				returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits = enemyCount;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits);
+
+				returnNum.GetComponent<SceneController>().Region_SelectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = returnNum.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+				returnNum.GetComponent<SceneController>().Region_SelectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = returnNum.GetComponent<MapScript> ().currentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+				//returnNum.GetComponent<SceneController>().Region_SelectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+
+			System.Threading.Thread.Sleep(1000);
+			returnNum.GetComponent<SceneController>().Player1_Unit = null;
+			returnNum.GetComponent<SceneController>().Player2_Unit = null;
+			returnNum.GetComponent<SceneController>().Region_SelectedRegion = null;
+			returnNum.GetComponent<SceneController>().Region_CurrentRegion = null;
+			returnNum.GetComponent<SceneController>().inBattleScene = false;
+			Application.LoadLevel(0);
 		}
 		else if (enemyCount > 1 && friendlyCount == 0 && defeatFlag == false)
 		{
 			Debug.Log("Game over. All units dead");
 			defeatFlag = true;
+				returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits = friendlyCount;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits);
+				returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits = enemyCount;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits);
+		
+				returnNum.GetComponent<SceneController>().Region_CurrentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag = returnNum.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().tag;
+				returnNum.GetComponent<SceneController>().Region_CurrentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID = returnNum.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().ID;
+				//returnNum.GetComponent<SceneController>().Region_CurrentRegion.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
+
+			System.Threading.Thread.Sleep(1000);
+			returnNum.GetComponent<SceneController>().Player1_Unit = null;
+			returnNum.GetComponent<SceneController>().Player2_Unit = null;
+			returnNum.GetComponent<SceneController>().Region_SelectedRegion = null;
+			returnNum.GetComponent<SceneController>().Region_CurrentRegion = null;
+			returnNum.GetComponent<SceneController>().inBattleScene = false;
+			Application.LoadLevel(0);
 		}
 		else if (enemyCount == 0 && friendlyCount == 0 && washFlag == false)
 		{
 			Debug.Log("Draw");
 			washFlag = true;
+				returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits = friendlyCount + 1;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player1_Unit.GetComponent<theUnit>().numberOfUnits);
+				returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits = enemyCount + 1;
+				Debug.Log(returnNum.GetComponent<SceneController>().Player2_Unit.GetComponent<theUnit>().numberOfUnits);
+			System.Threading.Thread.Sleep(1000);
+			returnNum.GetComponent<SceneController>().Player1_Unit = null;
+			returnNum.GetComponent<SceneController>().Player2_Unit = null;
+			returnNum.GetComponent<SceneController>().Region_SelectedRegion = null;
+			returnNum.GetComponent<SceneController>().Region_CurrentRegion = null;
+			returnNum.GetComponent<SceneController>().inBattleScene = false;
+			Application.LoadLevel(0);
 		}
 	}
 

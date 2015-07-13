@@ -34,7 +34,7 @@ public class EnemyAttack : MonoBehaviour {
 	{
 		Health eh = other.gameObject.GetComponent<Health>();
 		if (other.gameObject.tag == "SelectableUnits") {
-			eh.AddjustCurrentHealth(-1000); //* Time.DeltaTime;
+			eh.AddjustCurrentHealth(-100); //* Time.DeltaTime;
 		}
 	}
 	
@@ -47,10 +47,10 @@ public class EnemyAttack : MonoBehaviour {
 		
 		
 		if(distance < 2.5f && GameObject.FindGameObjectWithTag("SelectableUnits")) {
-			if(direction > 0) { 
+			//if(direction > 0) { 
 				Health eh = (Health)target.GetComponent("Cube(Clone)");
-				eh.AddjustCurrentHealth(-1000);
-			}
+				eh.AddjustCurrentHealth(-100);
+			//}
 		}
 	}
 }
