@@ -165,6 +165,7 @@ public class theUnit : MonoBehaviour {
 			sceneController.GetComponent<SceneController> ().Player2_Unit = theMap.GetComponent<MapScript> ().selectedRegion.GetComponent<RegionScript> ().unitOnRegion;
 			sceneController.GetComponent<SceneController> ().Region_SelectedRegion = theMap.GetComponent<MapScript> ().selectedRegion;
 			sceneController.GetComponent<SceneController> ().Region_CurrentRegion = theMap.GetComponent<MapScript> ().currentRegion;
+			sceneController.GetComponent<SceneController> ().GameMap = theMap;
 			sceneController.GetComponent<SceneController> ().inBattleScene = true;
 			Application.LoadLevel (1);
 			

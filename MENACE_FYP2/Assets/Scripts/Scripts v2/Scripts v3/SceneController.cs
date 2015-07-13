@@ -10,6 +10,7 @@ public class SceneController : MonoBehaviour {
 	public GameObject Player2_Unit;
 	public GameObject Region_SelectedRegion;
 	public GameObject Region_CurrentRegion;
+	public GameObject GameMap;
 
 	public bool inBattleScene;
 
