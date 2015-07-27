@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class RegionScript : MonoBehaviour {
 
 	public static RegionScript RegionControl;
-	//GameObject theMap;
 	public int region_Owner;
 
 	public bool isSelected;
@@ -17,15 +16,7 @@ public class RegionScript : MonoBehaviour {
 
 	public GameObject unitOnRegion;
 	public Color origColor;
-	
-	void Awake(){
-		//if (RegionControl == null) {
-			//DontDestroyOnLoad (gameObject);
-			//RegionControl = this;
-		//} else if(RegionControl != this){
-		//	Destroy(gameObject);
-		//}
-	}
+
 
 	// Use this for initialization
 	void Start () {
@@ -38,12 +29,12 @@ public class RegionScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//		if (isSelected == true) {
-//			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
-//		} else {
-//			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
-//		}
-		gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+		if (isSelected == true) {
+			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
+		} else if (isSelected == false){
+			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+		}
+		//gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
 		if (canMoveTo == true) {
 			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.black;
 			if (isSelected == true) {
@@ -58,7 +49,9 @@ public class RegionScript : MonoBehaviour {
 	// Shows a text who is the owner
 	void OnGUI(){
 		Vector3 p = Camera.main.WorldToScreenPoint (gameObject.transform.position);
-		GUI.Label (new Rect (p.x - 10,Screen.height-(p.y + 20), 50, 20), region_Owner.ToString());
+		if (unitOnRegion != null) {
+			GUI.Label (new Rect (p.x - 10, Screen.height - (p.y + 20), 50, 20), unitOnRegion.GetComponent<theUnit> ().numberOfUnits.ToString ());
+		}
 	}
 
 }
