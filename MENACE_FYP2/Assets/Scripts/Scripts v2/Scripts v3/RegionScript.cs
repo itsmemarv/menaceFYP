@@ -29,12 +29,26 @@ public class RegionScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+//		if (region_Owner == 1) {
+//			gameObject.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.173f, 0.157f, 0.639f));
+//		}
+//		else if (region_Owner == 2) {
+//			gameObject.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.639f, 0.173f, 0.157f));
+//		}
+
+//		if (isSelected == true) {
+//			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
+//		} else if (isSelected == false){
+//			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+//		}
+
+		gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+
 		if (isSelected == true) {
-			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.grey;
-		} else if (isSelected == false){
-			gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+			gameObject.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.0f,0.0f,0.0f,0.5f));
 		}
-		//gameObject.GetComponent<SpriteRenderer> ().material.color = origColor;
+
 		if (canMoveTo == true) {
 			gameObject.GetComponent<SpriteRenderer> ().material.color = Color.black;
 			if (isSelected == true) {
@@ -44,6 +58,8 @@ public class RegionScript : MonoBehaviour {
 				gameObject.GetComponent<SpriteRenderer> ().material.color = Color.black;
 			}
 		}
+
+
 	}
 
 	// Shows a text who is the owner

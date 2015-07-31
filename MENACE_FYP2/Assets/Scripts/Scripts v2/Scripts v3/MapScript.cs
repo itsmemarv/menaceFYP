@@ -51,6 +51,7 @@ public class MapScript : MonoBehaviour {
 	public bool OK;
 	public GameObject m_mySlider;
 	Slider _mySlider;
+	public bool SliderActive;
 
 	public bool firstSetDone;
 	public bool proceed;
@@ -59,11 +60,14 @@ public class MapScript : MonoBehaviour {
 	public GameObject m_AttackFrom;
 	public GameObject m_AttackTo;
 
+	public Text PHASETEXT;
+	public GameObject CircleOut;
 	// Use this for initialization
 	void Start () {
 		StartOfGame = true;
 		whosPlaying = 1;
-		
+		//CircleOut.GetComponent<Image> ().color = new Color (0.043f, 0.043f, 0.494f);
+		CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.043f, 0.043f, 0.494f);
 		Turns = 12;
 		EndOfGame = false;
 		player1counter = 0;
@@ -93,6 +97,7 @@ public class MapScript : MonoBehaviour {
 		_mySlider = m_mySlider.GetComponent<Slider> ();
 
 		m_mySlider.SetActive (false);
+		SliderActive = false;
 
 		_blueUnitControllerScript = m_BluePlayerController.GetComponent<UnitController> ();
 		_redUnitControllerScript = m_RedPlayerController.GetComponent<UnitController> ();
@@ -108,6 +113,7 @@ public class MapScript : MonoBehaviour {
 		_redUnitControllerScript.Deploy_RemainingUnits = 7;
 
 		thePhase = E_PHASE.ACQUIRE;
+		PHASETEXT.text = thePhase.ToString();
 		OK = false;
 		firstSetDone = false;
 	}   
@@ -118,7 +124,7 @@ public class MapScript : MonoBehaviour {
 		if (EndOfGame == false) {
 
 			PhaseTurns();
-			
+
 			foreach (GameObject unit in unitList) {
 				UpdateTileOwnership (unit);
 			}
@@ -131,7 +137,7 @@ public class MapScript : MonoBehaviour {
 			}
 
 			// TO CANCEL ATTACK SELECTIONS
-			if (Input.GetKeyDown("space") && thePhase == E_PHASE.ATTACK){
+			if (Input.GetKeyDown("space") && (thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)){
 				currentRegion = null;
 				m_AttackFrom = null;
 				m_AttackTo = null;
@@ -152,7 +158,7 @@ public class MapScript : MonoBehaviour {
 	}
 	
 	void SelectRegion(){
-		if (regionList.Count > 0) {
+		if (regionList.Count > 0 && SliderActive == false) {
 			if (Input.GetMouseButtonDown (0)) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				RaycastHit2D hitInfo = Physics2D.GetRayIntersection (ray,Mathf.Infinity); // Cast a ray towards Z-axis in 2D Space(X-Y Axes)
@@ -185,7 +191,10 @@ public class MapScript : MonoBehaviour {
 										m_Unit.transform.parent = m_BluePlayerController.transform;
 										_blueUnitControllerScript.m_unitList.Add(m_Unit);
 										_blueUnitControllerScript.Acquire_RemainingUnits -- ;
+										//selectedRegion.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.173f, 0.157f, 0.639f));
+										selectedRegion.GetComponent<RegionScript>().origColor = new Color(0.173f, 0.157f, 0.639f);
 										whosPlaying = 2;
+										CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.494f, 0.043f, 0.043f);
 										///m_Unit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player1counter) + 1;
 									} else if(m_Unit.GetComponent<theUnit> ().ID == 2)
 									{
@@ -194,7 +203,10 @@ public class MapScript : MonoBehaviour {
 										m_Unit.transform.parent = m_RedPlayerController.transform;
 										_redUnitControllerScript.m_unitList.Add(m_Unit);
 										_redUnitControllerScript.Acquire_RemainingUnits -- ; 
+										//selectedRegion.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.639f, 0.173f, 0.157f));
+										selectedRegion.GetComponent<RegionScript>().origColor = new Color(0.639f, 0.173f, 0.157f);
 										whosPlaying = 1;
+										CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.043f, 0.043f, 0.494f);
 										//m_Unit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player2counter) + 1;
 									}
 									//m_Unit.transform.parent = m_sceneController.transform;
@@ -220,6 +232,7 @@ public class MapScript : MonoBehaviour {
 										_selectedRegion.unitOnRegion.GetComponent<theUnit>().numberOfUnits++;
 										_blueUnitControllerScript.Deploy_RemainingUnits--;
 										whosPlaying = 2;
+										CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.494f, 0.043f, 0.043f);
 									}
 									else{
 										_selectedRegion.isSelected = false;
@@ -231,6 +244,7 @@ public class MapScript : MonoBehaviour {
 										_selectedRegion.unitOnRegion.GetComponent<theUnit>().numberOfUnits++;
 										_redUnitControllerScript.Deploy_RemainingUnits--;
 										whosPlaying = 1;
+										CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.043f, 0.043f, 0.494f);
 									}
 									else{
 										_selectedRegion.isSelected = false;
@@ -257,6 +271,7 @@ public class MapScript : MonoBehaviour {
 										else if(_blueUnitControllerScript.Deploy_RemainingUnits <= 0)
 										{
 											thePhase = E_PHASE.ATTACK;
+											PHASETEXT.text = thePhase.ToString();
 										}
 									}
 									else{
@@ -273,6 +288,7 @@ public class MapScript : MonoBehaviour {
 										else if(_redUnitControllerScript.Deploy_RemainingUnits <= 0)
 										{
 											thePhase = E_PHASE.ATTACK;
+											PHASETEXT.text = thePhase.ToString();
 										}
 									}
 									else{
@@ -312,7 +328,7 @@ public class MapScript : MonoBehaviour {
 									}
 									break;
 								case 2:
-									if(_selectedRegion.region_Owner == 2 && m_AttackFrom == null){
+									if(_selectedRegion.region_Owner == 2 && m_AttackFrom == null && _selectedRegion.unitOnRegion.GetComponent<theUnit>().numberOfUnits > 1){
 										_selectedRegion.isSelected = true;
 										currentRegion = selectedRegion;
 										m_AttackFrom = currentRegion;
@@ -546,7 +562,7 @@ public class MapScript : MonoBehaviour {
 			GUI.Label (new Rect (Screen.width * 0.476f, 20, 180, 25), "Turns Left: " + Turns);
 
 		}
-		GUI.Box (new Rect (Screen.width * 0.37f, 100, 500, 25), "Phase: " + thePhase);
+		//GUI.Box (new Rect (Screen.width * 0.37f, 100, 500, 25), "Phase: " + thePhase);
 		if (thePhase == E_PHASE.DEPLOY) {
 			GUI.Box (new Rect (Screen.width * 0.37f, 150, 500, 25), "REMAINING UNITS " + _redUnitControllerScript.Deploy_RemainingUnits);
 		}
@@ -562,6 +578,7 @@ public class MapScript : MonoBehaviour {
 			else{
 				StartOfGame = false;
 				thePhase = E_PHASE.DEPLOY;
+				PHASETEXT.text = thePhase.ToString();
 			}
 			break;
 
@@ -572,6 +589,7 @@ public class MapScript : MonoBehaviour {
 			else{
 				selectedRegion = null;
 				thePhase = E_PHASE.ATTACK;
+				PHASETEXT.text = thePhase.ToString();
 			}
 			break;
 			
@@ -616,10 +634,10 @@ public class MapScript : MonoBehaviour {
 		// Set into the Slider
 		if (OK == false) {
 			m_mySlider.SetActive(true);
+			SliderActive = true;
 			_mySlider.maxValue = m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits - 1;
 			_mySlider.minValue = 1;
-			GameObject m_tempPanelObj = _mySlider.transform.FindChild("NumberPanel").gameObject;
-			GameObject m_tempPanelTextObj = m_tempPanelObj.transform.FindChild("NumberText").gameObject;
+			GameObject m_tempPanelTextObj = _mySlider.transform.FindChild("NumberText").gameObject;
 			m_tempPanelTextObj.GetComponent<Text>().text = _mySlider.value.ToString();
 		}
 
@@ -634,22 +652,29 @@ public class MapScript : MonoBehaviour {
 			m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits -= (int)_mySlider.value;
 
 			if(m_AttackTo.GetComponent<RegionScript>().region_Owner == 1){
+				//m_AttackTo.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.173f, 0.157f, 0.639f));
+				m_AttackTo.GetComponent<RegionScript>().origColor = new Color(0.173f, 0.157f, 0.639f);
+				player2counter ++;
 				player1counter ++;
 				player2counter --;
 			}
 			else if(m_AttackTo.GetComponent<RegionScript>().region_Owner == 2){
+				//m_AttackTo.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.639f, 0.173f, 0.157f));
+				m_AttackTo.GetComponent<RegionScript>().origColor =  new Color(0.639f, 0.173f, 0.157f);
 				player2counter ++;
 				player1counter --;
 			}
 
 			m_sceneController.GetComponent<SceneController>().battleResults = 0;
 			m_mySlider.SetActive(false);
+			SliderActive = false;
 			OK = false;
 			m_AttackFrom = null;
 			m_AttackTo = null;
 			selectedRegion = null;
 			currentRegion = null;
 			thePhase = E_PHASE.FORTIFY;
+			PHASETEXT.text = thePhase.ToString();
 		}
 	}
 
@@ -661,6 +686,7 @@ public class MapScript : MonoBehaviour {
 		selectedRegion = null;
 		currentRegion = null;
 		thePhase = E_PHASE.FORTIFY;
+		PHASETEXT.text = thePhase.ToString();
 
 	}
 
@@ -671,6 +697,7 @@ public class MapScript : MonoBehaviour {
 		selectedRegion = null;
 		currentRegion = null;
 		thePhase = E_PHASE.FORTIFY;
+		PHASETEXT.text = thePhase.ToString();
 	}
 	// for Button Sake
 	public void set_OK_True()
@@ -683,11 +710,12 @@ public class MapScript : MonoBehaviour {
 	void AddMinusUnits(){
 		if (OK == false) {
 			m_mySlider.SetActive(true);
+			SliderActive = true;
 			_mySlider.maxValue = m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits - 1;
 			_mySlider.minValue = 1;
 			
-			GameObject m_tempPanelObj = _mySlider.transform.FindChild("NumberPanel").gameObject;
-			GameObject m_tempPanelTextObj = m_tempPanelObj.transform.FindChild("NumberText").gameObject;
+			//GameObject m_tempPanelObj = _mySlider.transform.FindChild("NumberPanel").gameObject;
+			GameObject m_tempPanelTextObj = _mySlider.transform.FindChild("NumberText").gameObject;
 			m_tempPanelTextObj.GetComponent<Text>().text = _mySlider.value.ToString();
 		}
 		
@@ -696,6 +724,7 @@ public class MapScript : MonoBehaviour {
 			m_AttackTo.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits += (int)_mySlider.value;
 			m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits -= (int)_mySlider.value;
 			m_mySlider.SetActive(false);
+			SliderActive = false;
 			OK = false;
 			m_AttackFrom = null;
 			m_AttackTo = null;
@@ -706,11 +735,15 @@ public class MapScript : MonoBehaviour {
 			if(firstSetDone == false){
 				if(whosPlaying == 1){
 					whosPlaying = 2;
+					CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.494f, 0.043f, 0.043f);
+
 				}
 				else if(whosPlaying == 2){
 					whosPlaying = 1;
+					CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.043f, 0.043f, 0.494f);
 				}
 				thePhase = E_PHASE.ATTACK;
+				PHASETEXT.text = thePhase.ToString();
 				firstSetDone = true;
 			}
 
@@ -718,13 +751,16 @@ public class MapScript : MonoBehaviour {
 				if(whosPlaying == 1){
 					_redUnitControllerScript.Deploy_RemainingUnits = 3; // Reinforce 5 Units
 					whosPlaying = 2;
+					CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.494f, 0.043f, 0.043f);
 				}
 				else if(whosPlaying == 2){
 					_blueUnitControllerScript.Deploy_RemainingUnits = 3; // Reinforce 5 Units
 					Turns--;
 					whosPlaying = 1;
+					CircleOut.GetComponent<SpriteRenderer>().material.color = new Color (0.043f, 0.043f, 0.494f);
 				}
 				thePhase = E_PHASE.REINFORCE;
+				PHASETEXT.text = thePhase.ToString();
 			}
 		}
 	}
