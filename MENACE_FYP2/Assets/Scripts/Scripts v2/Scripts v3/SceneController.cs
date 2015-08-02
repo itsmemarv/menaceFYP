@@ -49,5 +49,11 @@ public class SceneController : MonoBehaviour {
 			}
 		}
 	}
+
+	
+	public void Back2Menu(string SceneName){
+		Destroy (gameObject);
+		Application.LoadLevel (SceneName);
+	}
 	
 }

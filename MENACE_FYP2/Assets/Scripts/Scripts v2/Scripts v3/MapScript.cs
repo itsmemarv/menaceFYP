@@ -133,6 +133,7 @@ public class MapScript : MonoBehaviour {
 		
 		text_TurnsLeftTEXT = TurnsLeftTEXT.GetComponent<Text> ();
 		text_RemUnitsTEXT = RemUnitsTEXT.GetComponent<Text> ();
+
 		// Enable only if in DEPLOY PHASE
 		RemUnitsTEXT.SetActive (false);
 		
@@ -1027,4 +1028,5 @@ public class MapScript : MonoBehaviour {
 //			_PhaseTextGOAnim.SetTrigger ("playtext");
 //		}
 //	}
+
 }

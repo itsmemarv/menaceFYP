@@ -38,7 +38,7 @@ public class AudioScript : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	public void ToggleMute (bool isMuted = false) {
+	public void ToggleMute (bool isMuted) {
 		if (instance.audio.isPlaying && isMuted == false)
 		{
 			audio.mute.Equals(true);

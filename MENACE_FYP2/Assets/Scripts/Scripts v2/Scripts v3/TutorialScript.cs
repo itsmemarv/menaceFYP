@@ -84,6 +84,10 @@ public class TutorialScript : MonoBehaviour {
 
 		}
 
+	}
 
+
+	public void BackToMenu(string SceneName){
+		Application.LoadLevel (SceneName);
 	}
 }
