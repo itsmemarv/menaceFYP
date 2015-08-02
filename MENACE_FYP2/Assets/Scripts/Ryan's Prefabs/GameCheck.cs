@@ -66,7 +66,7 @@ public class GameCheck : MonoBehaviour {
 			_returnNum.Region_CurrentRegion = null;
 			_returnNum.GameMap = null;
 			_returnNum.inBattleScene = false;
-			Application.LoadLevel(0);
+			Application.LoadLevel("GameScene");
 		}
 		else if (enemyCount > 1 && friendlyCount == 0 && defeatFlag == false)
 		{
@@ -102,7 +102,7 @@ public class GameCheck : MonoBehaviour {
 			_returnNum.Region_CurrentRegion = null;
 			_returnNum.GameMap = null;
 			_returnNum.inBattleScene = false;
-			Application.LoadLevel(0);
+			Application.LoadLevel("GameScene");
 		}
 		else if (enemyCount == 0 && friendlyCount == 0 && washFlag == false)
 		{
@@ -122,7 +122,7 @@ public class GameCheck : MonoBehaviour {
 			_returnNum.Region_CurrentRegion = null;
 			_returnNum.GameMap = null;
 			_returnNum.inBattleScene = false;
-			Application.LoadLevel(0);
+			Application.LoadLevel("GameScene");
 		}
 	}
 
