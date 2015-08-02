@@ -22,6 +22,14 @@ public class theUnit : MonoBehaviour {
 	public int numberOfUnits;
 	public int numberOfTrainableUnit;
 
+	private GameObject m_child;
+	private TextMesh text_child;
+
+	private Color textRed;
+	private Color textBlue;
+
+	public bool HasMoreThan1Unit;
+
 	void Awake(){
 		DontDestroyOnLoad (gameObject);
 	}
@@ -35,20 +43,38 @@ public class theUnit : MonoBehaviour {
 		_sceneController = m_sceneController.GetComponent<SceneController> ();
 		
 		numberOfUnits = 1;
+		
+		m_child = gameObject.transform.GetChild(0).gameObject;
+		text_child = m_child.GetComponent<TextMesh> ();
+
+		textBlue = new Color (0.706f, 0.706f, 1.0f);
+		textRed = new Color (1.0f, 0.706f, 0.706f);
+
+		HasMoreThan1Unit = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		UpdateUnitColors ();
-		
+
+		HasMoreThan1UnitCheck ();
+		UpdateNumberText ();
 	}
-	
-	void UpdateUnitColors(){
+
+	void UpdateNumberText(){
+		text_child.text = numberOfUnits.ToString ();
 		if(gameObject.tag == "unit_Player1"){
-			gameObject.GetComponent<Renderer>().material.color = Color.blue;
+			text_child.color = textBlue;
 		}
 		else if(gameObject.tag == "unit_Player2"){
-			gameObject.GetComponent<Renderer>().material.color = Color.red;
+			text_child.color = textRed;
+		}
+	}
+
+	public void HasMoreThan1UnitCheck(){
+		if (numberOfUnits > 1) {
+			HasMoreThan1Unit = true;
+		} else {
+			HasMoreThan1Unit = false;
 		}
 	}
 

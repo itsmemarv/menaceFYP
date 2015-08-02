@@ -62,12 +62,4 @@ public class RegionScript : MonoBehaviour {
 
 	}
 
-	// Shows a text who is the owner
-	void OnGUI(){
-		Vector3 p = Camera.main.WorldToScreenPoint (gameObject.transform.position);
-		if (unitOnRegion != null) {
-			GUI.Label (new Rect (p.x - 10, Screen.height - (p.y + 20), 50, 20), unitOnRegion.GetComponent<theUnit> ().numberOfUnits.ToString ());
-		}
-	}
-
 }
