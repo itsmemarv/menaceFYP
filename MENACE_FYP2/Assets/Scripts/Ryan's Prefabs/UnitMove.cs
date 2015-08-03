@@ -29,11 +29,7 @@ public class UnitMove : MonoBehaviour {
 			{
 				RaycastHit hit;
 				Ray ray;
-	#if UNITY_EDITOR
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-	#elif (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8)
-				ray = Camera.mainScreenPointToRay(Input.GetTouch(0).Position);
-	#endif
 				if(Physics.Raycast(ray,out hit))
 				{
 					flag = true;
