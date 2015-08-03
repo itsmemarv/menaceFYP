@@ -34,7 +34,7 @@ public class EnemyAttack : MonoBehaviour {
 	{
 		Health eh = other.gameObject.GetComponent<Health>();
 		if (other.gameObject.tag == "SelectableUnits") {
-			eh.AddjustCurrentHealth(Random.Range(-500,-100)); //* Time.DeltaTime;
+			eh.AddjustCurrentHealth(Random.Range(-800,-100)); //* Time.DeltaTime;
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class EnemyAttack : MonoBehaviour {
 			if(direction > 0) { 
 				Health eh = (Health)target.GetComponent("Cube(Clone)");
 				//Health eh = target.GetComponent<Health>();
-				eh.AddjustCurrentHealth(Random.Range(-500,-100));
+				eh.AddjustCurrentHealth(Random.Range(-800,-100));
 			}
 		}
 	}
