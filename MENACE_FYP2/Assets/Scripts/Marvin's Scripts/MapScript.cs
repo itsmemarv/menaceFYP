@@ -1049,6 +1049,10 @@ public class MapScript : MonoBehaviour {
 	void SkipTurn(){
 		switch(whosPlaying){
 		case 1:
+			proceed = false;
+			currentRegion = null;
+			m_AttackTo = null;
+			m_AttackFrom = null;
 			_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;		// Reinforce 5 Units
 			whosPlaying = 2; 														// Set to Red Player Turn
 			CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor; 	// Change the BGEdges to red
@@ -1060,6 +1064,10 @@ public class MapScript : MonoBehaviour {
 			break;
 
 		case 2:
+			proceed = false;
+			currentRegion = null;
+			m_AttackTo = null;
+			m_AttackFrom = null;
 			_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; 		// Reinforce 5 Units
 			Turns--;																// Decrement Turns Left
 			whosPlaying = 1;														// Set to Blue Player Turn
@@ -1092,7 +1100,7 @@ public class MapScript : MonoBehaviour {
 
 	public void ButtonAttack(){
 		// TO ATTACK
-		if (thePhase == E_PHASE.ATTACK) {
+		if (thePhase == E_PHASE.ATTACK  && EndOfGame == false) {
 			if (m_sceneController.GetComponent<SceneController> ().battleResults == 0) {
 				if (m_AttackFrom != null &&
 					m_AttackTo != null)
@@ -1103,7 +1111,7 @@ public class MapScript : MonoBehaviour {
 
 	public void ButtonCancel(){
 		// TO CANCEL ATTACK SELECTIONS
-		if ((thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)) {
+		if ((thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)  && EndOfGame == false) {
 			if (m_sceneController.GetComponent<SceneController> ().battleResults == 0) {
 				currentRegion = null;
 				m_AttackFrom = null;
@@ -1123,8 +1131,27 @@ public class MapScript : MonoBehaviour {
 	}
 
 	public void ButtonSkipTurn(){
-		if(firstSetDone == true){
+		if(firstSetDone == true && EndOfGame == false){
 			SkipTurn();
+		}
+		else if (EndOfGame == true) {											// IF YES,
+			if (player1counter > player2counter) {								// Change Text to who wins accordingly
+				audioChangePhase.PlayOneShot(phaseClip);
+				PHASETEXT.text = "BLUE WINS!";									
+				_PhaseBGAnim.SetTrigger ("play");								
+				_PhaseTextGOAnim.SetTrigger ("playtext");
+			} else if (player1counter < player2counter) {
+				audioChangePhase.PlayOneShot(phaseClip);
+				PHASETEXT.text = "RED WINS!";
+				_PhaseBGAnim.SetTrigger ("play");
+				_PhaseTextGOAnim.SetTrigger ("playtext");
+			} else if (player1counter == player2counter) {
+				audioChangePhase.PlayOneShot(phaseClip);
+				PHASETEXT.text = "DRAW!";
+				_PhaseBGAnim.SetTrigger ("play");
+				_PhaseTextGOAnim.SetTrigger ("playtext");
+			}
+			
 		}
 	}
 
