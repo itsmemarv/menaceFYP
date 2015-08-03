@@ -11,7 +11,6 @@ enum E_PHASE{
 	TOTAL
 }
 
-
 public class MapScript : MonoBehaviour {
 	
 	public static MapScript MapControl;
@@ -99,6 +98,14 @@ public class MapScript : MonoBehaviour {
 	public AudioSource audioBattleResults;
 
 	public bool playedsfx;
+
+	public int DEPLOYABLES;
+	public int REINFORCEMENTS;
+
+	public GameObject AttackButton;
+	public GameObject CancelButton;
+	public GameObject SkipButton;
+
 	// Use this for initialization
 	void Start () {
 		StartOfGame = true;
@@ -112,29 +119,11 @@ public class MapScript : MonoBehaviour {
 		player2counter = 0;
 		endCount = false;
 		playedsfx = false;
-		// Precautions
-		if (m_sceneController == null) {
-			m_sceneController = GameObject.Find ("SceneController");
-		}
-		if (mapParent == null) {
-			mapParent = GameObject.Find("MapParent");
-		}
-		if (m_BluePlayerController == null) {
-			m_BluePlayerController = GameObject.Find("BlueController");
-		}
-		if (m_RedPlayerController == null) {
-			m_RedPlayerController = GameObject.Find("RedController");
-		}
-		if (regionParent == null) {
-			regionParent = GameObject.Find("RegionParent");
-		}
-		if (m_mySlider == null) {
-			m_mySlider = GameObject.Find("mySlider");
-		}
+		DEPLOYABLES = 7;
+		REINFORCEMENTS = 5;
 		
 		_PhaseBGAnim = m_PhaseBG.GetComponent<Animator> ();
 		_PhaseTextGOAnim = m_PhaseTextGO.GetComponent<Animator> ();
-		
 		
 		_mySlider = m_mySlider.GetComponent<Slider> ();
 		m_mySlider.SetActive (false);
@@ -156,8 +145,8 @@ public class MapScript : MonoBehaviour {
 		_blueUnitControllerScript.Acquire_RemainingUnits = dividedRegionSize;
 		_redUnitControllerScript.Acquire_RemainingUnits = dividedRegionSize;
 		
-		_blueUnitControllerScript.Deploy_RemainingUnits = 15;
-		_redUnitControllerScript.Deploy_RemainingUnits = 15;
+		_blueUnitControllerScript.Deploy_RemainingUnits = DEPLOYABLES;
+		_redUnitControllerScript.Deploy_RemainingUnits = DEPLOYABLES;
 		
 		thePhase = E_PHASE.ACQUIRE;
 		_PhaseBGAnim.SetTrigger ("play");
@@ -188,6 +177,9 @@ public class MapScript : MonoBehaviour {
 		if (StartOfGame == true) {
 			audioChangePhase.PlayOneShot (phaseClip);
 		}
+		AttackButton.GetComponent<Button> ().interactable = false;
+		CancelButton.GetComponent<Button> ().interactable = false;
+		SkipButton.GetComponent<Button> ().interactable = false;
 	}   
 	
 	// Update is called once per frame
@@ -207,32 +199,32 @@ public class MapScript : MonoBehaviour {
 			{
 				EndOfGame = true;
 			}
-			
-			// TO CANCEL ATTACK SELECTIONS
-			if (Input.GetKeyDown("space") && (thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)){
-				currentRegion = null;
-				m_AttackFrom = null;
-				m_AttackTo = null;
-				foreach(GameObject zRegion in regionList){
-					zRegion.GetComponent<RegionScript>().canMoveTo = false;
-					zRegion.GetComponent<RegionScript>().isSelected = false;
-				}
-				if(thePhase == E_PHASE.FORTIFY){
-					proceed = false;
-					inAddMinus = false;
-					m_mySlider.SetActive(false);
-					SliderActive = false;
-				}
-			}
-			
+
 			// TO ATTACK
-			if (Input.GetKeyDown("a") && thePhase == E_PHASE.ATTACK){
-				if(m_AttackFrom != null &&
-				   m_AttackTo != null)
-					m_AttackFrom.GetComponent<RegionScript>().unitOnRegion.GetComponent<theUnit>().Attack();
+			if (thePhase == E_PHASE.ATTACK){
+				AttackButton.GetComponent<Button> ().interactable = true;
 			}
+			else if (thePhase != E_PHASE.ATTACK){
+				AttackButton.GetComponent<Button> ().interactable = false;
+			}
+
+			// TO CANCEL ATTACK SELECTIONS
+			if ((thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)){
+				CancelButton.GetComponent<Button> ().interactable = true;
+			}
+			else if ((thePhase != E_PHASE.ATTACK || thePhase != E_PHASE.FORTIFY)){
+				AttackButton.GetComponent<Button> ().interactable = false;
+			}
+
+			// TO SKIP TURN
+			if(firstSetDone == true){
+				SkipButton.GetComponent<Button> ().interactable = true;
+			}
+
+			// TURNS LEFT TEXT
 			text_TurnsLeftTEXT.text = "Turns Left: " + Turns.ToString();
-			
+
+			// DEPLOYABLE/REINFORCEMENTS TEXT
 			if (thePhase == E_PHASE.DEPLOY){
 				RemUnitsTEXT.SetActive (true);
 				if(whosPlaying == 1){
@@ -262,6 +254,8 @@ public class MapScript : MonoBehaviour {
 //			if(Input.GetKeyDown("p")){
 //				TestEndGame();
 //			}
+
+
 		}
 		
 	}
@@ -866,12 +860,12 @@ public class MapScript : MonoBehaviour {
 			
 			else if(firstSetDone == true){
 				if(whosPlaying == 1){
-					_redUnitControllerScript.Deploy_RemainingUnits = 5; // Reinforce 5 Units
+					_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; // Reinforce 5 Units
 					whosPlaying = 2;
 					CircleOut.GetComponent<SpriteRenderer>().material.color = myRedColor;
 				}
 				else if(whosPlaying == 2){
-					_blueUnitControllerScript.Deploy_RemainingUnits = 5; // Reinforce 5 Units
+					_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; // Reinforce 5 Units
 					Turns--;
 					whosPlaying = 1;
 					CircleOut.GetComponent<SpriteRenderer>().material.color = myBlueColor;
@@ -969,7 +963,7 @@ public class MapScript : MonoBehaviour {
 	void ResultPhaseCheck(){
 		if (whosPlaying == 1) {
 			if (player1counter <= 1 || BlueUnitNumberCheck () == false) { 				// Blue has only 1 region left AND all regions only have 1 unit
-				_redUnitControllerScript.Deploy_RemainingUnits = 5;						// Reinforce 5 Units
+				_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;						// Reinforce 5 Units
 				whosPlaying = 2; 														// Set to Red Player Turn
 				CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor; 	// Change the BGEdges to red
 				thePhase = E_PHASE.REINFORCE; 											// Set the Phase to REINFORCE (so that RED could reinforce)
@@ -1010,7 +1004,7 @@ public class MapScript : MonoBehaviour {
 			}
 		} else if (whosPlaying == 2) {
 			if (player2counter <= 1 || RedUnitNumberCheck () == false) {				// Red has only 1 region left AND all regions only have 1 unit
-				_blueUnitControllerScript.Deploy_RemainingUnits = 5; 					// Reinforce 5 Units
+				_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; 		// Reinforce 5 Units
 				Turns--;																// Decrement Turns Left
 				whosPlaying = 1;														// Set to Blue Player Turn
 				CircleOut.GetComponent<SpriteRenderer> ().material.color = myBlueColor;	// Change BGEdges to blue
@@ -1055,7 +1049,7 @@ public class MapScript : MonoBehaviour {
 	void SkipTurn(){
 		switch(whosPlaying){
 		case 1:
-			_redUnitControllerScript.Deploy_RemainingUnits = 5;						// Reinforce 5 Units
+			_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;		// Reinforce 5 Units
 			whosPlaying = 2; 														// Set to Red Player Turn
 			CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor; 	// Change the BGEdges to red
 			thePhase = E_PHASE.REINFORCE; 											// Set the Phase to REINFORCE (so that RED could reinforce)
@@ -1066,7 +1060,7 @@ public class MapScript : MonoBehaviour {
 			break;
 
 		case 2:
-			_blueUnitControllerScript.Deploy_RemainingUnits = 5; 					// Reinforce 5 Units
+			_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; 		// Reinforce 5 Units
 			Turns--;																// Decrement Turns Left
 			whosPlaying = 1;														// Set to Blue Player Turn
 			CircleOut.GetComponent<SpriteRenderer> ().material.color = myBlueColor;	// Change BGEdges to blue
@@ -1095,5 +1089,43 @@ public class MapScript : MonoBehaviour {
 //			_PhaseTextGOAnim.SetTrigger ("playtext");
 //		}
 //	}
+
+	public void ButtonAttack(){
+		// TO ATTACK
+		if (thePhase == E_PHASE.ATTACK) {
+			if (m_sceneController.GetComponent<SceneController> ().battleResults == 0) {
+				if (m_AttackFrom != null &&
+					m_AttackTo != null)
+					m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().Attack ();
+			}
+		}
+	}
+
+	public void ButtonCancel(){
+		// TO CANCEL ATTACK SELECTIONS
+		if ((thePhase == E_PHASE.ATTACK || thePhase == E_PHASE.FORTIFY)) {
+			if (m_sceneController.GetComponent<SceneController> ().battleResults == 0) {
+				currentRegion = null;
+				m_AttackFrom = null;
+				m_AttackTo = null;
+				foreach (GameObject zRegion in regionList) {
+					zRegion.GetComponent<RegionScript> ().canMoveTo = false;
+					zRegion.GetComponent<RegionScript> ().isSelected = false;
+				}
+				if (thePhase == E_PHASE.FORTIFY) {
+					proceed = false;
+					inAddMinus = false;
+					m_mySlider.SetActive (false);
+					SliderActive = false;
+				}
+			}
+		}
+	}
+
+	public void ButtonSkipTurn(){
+		if(firstSetDone == true){
+			SkipTurn();
+		}
+	}
 
 }
