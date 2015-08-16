@@ -23,6 +23,41 @@ public class BattleScene : MonoBehaviour {
 	public bool OrangecanSpawn;
 	public int greenpoints;
 	public int orangepoints;
+
+	//Ryan's codes
+	/// <summary>
+	/// Variables are stored here
+	/// </summary>
+
+	//random mass assigned
+	public float giveMass;
+	public float randRange;
+
+	void SpriteMassSpawn ()
+	{
+		if(giveMass == 1)
+		{
+			if (GreenBlob)
+				GreenBlob.transform.localScale = new Vector3(0.5f,0.5f,0);
+			if (OrangeBlob)
+				OrangeBlob.transform.localScale = new Vector3(0.5f,0.5f,0);
+		}
+		else if(giveMass == 2)
+		{
+			if (GreenBlob)
+				GreenBlob.transform.localScale = new Vector3(1,1,0);
+			if (OrangeBlob)
+				OrangeBlob.transform.localScale = new Vector3(1,1,0);
+		}
+		else if(giveMass == 3)
+		{
+			if (GreenBlob)
+				GreenBlob.transform.localScale = new Vector3(2,2,0);
+			if (OrangeBlob)
+				OrangeBlob.transform.localScale = new Vector3(2,2,0);
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		GreenNumberOfBlobs = 5;
@@ -41,11 +76,15 @@ public class BattleScene : MonoBehaviour {
 		InitialiseClickPoint ();
 		InitialiseGreenBlobsPooling ();
 		InitialiseOrangeBlobsPooling ();
-
+		giveMass = 1;
+		randRange = 1;
+		//Rigidbody GreenBlobRigidBody = GreenBlob.AddComponent<Rigidbody>();
+		//Rigidbody OrangeBlobRigidBody = OrangeBlob.AddComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		randRange = Random.Range(1,3);
 		SpawnBlob ();
 		UpdateGreenBlob ();
 
@@ -76,6 +115,8 @@ public class BattleScene : MonoBehaviour {
 		for(int a = 0; a < GreenNumberOfBlobs; ++a){
 			GameObject greenblob = (GameObject)Instantiate(GreenBlob);
 			greenblob.SetActive(false);
+			giveMass = this.randRange;
+			SpriteMassSpawn ();
 			GreenBlobList.Add(greenblob);
 		}
 	}
@@ -84,6 +125,8 @@ public class BattleScene : MonoBehaviour {
 		for(int a = 0; a < OrangeNumberOfBlobs; ++a){
 			GameObject orangeblob = (GameObject)Instantiate(OrangeBlob);
 			orangeblob.SetActive(false);
+			giveMass = this.randRange;
+			SpriteMassSpawn ();
 			OrangeBlobList.Add(orangeblob);
 		}
 		
@@ -95,6 +138,8 @@ public class BattleScene : MonoBehaviour {
 			if (hitInfo) {
 				if(hitInfo.transform.gameObject.tag == "Button"){
 					Debug.Log("Hit");
+					giveMass = this.randRange;
+					SpriteMassSpawn ();
 					if (GreencanSpawn == true) {
 						for(int p = 0; p < GreenBlobList.Count; ++p) {
 							if(!GreenBlobList[p].activeInHierarchy){
@@ -159,6 +204,8 @@ public class BattleScene : MonoBehaviour {
 
 	void AI_SpawnOrangeBlob(){
 		if (OrangecanSpawn == true) {
+			this.giveMass = this.randRange;
+			SpriteMassSpawn ();
 			for(int o = 0; o < OrangeBlobList.Count; ++o) {
 				if(!OrangeBlobList[o].activeInHierarchy){
 					OrangeBlobList[o].transform.position = new Vector3(7,Random.Range(0,3),-2);
