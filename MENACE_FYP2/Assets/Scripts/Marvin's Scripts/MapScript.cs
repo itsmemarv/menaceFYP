@@ -79,10 +79,20 @@ public class MapScript : MonoBehaviour {
 	// Remaining Units Text
 	public GameObject RemUnitsTEXT;
 	private Text text_RemUnitsTEXT;
+
+	//Blue Resource Text
+	public GameObject BlueResourceTEXT;
+	private Text text_BlueResourceTEXT;
 	
+	//Red Resource Text
+	public GameObject RedResourceTEXT;
+	private Text text_RedResourceTEXT;
+
 	public bool BlueAllHaveMoreThan1Unit;
 	public bool RedAllHaveMoreThan1Unit;
-	
+
+
+
 	Color myBlueColor;
 	Color myRedColor;
 
@@ -101,6 +111,7 @@ public class MapScript : MonoBehaviour {
 
 	public int DEPLOYABLES;
 	public int REINFORCEMENTS;
+	public int unitsfromResources;
 
 	public GameObject AttackButton;
 	public GameObject CancelButton;
@@ -134,6 +145,9 @@ public class MapScript : MonoBehaviour {
 		
 		text_TurnsLeftTEXT = TurnsLeftTEXT.GetComponent<Text> ();
 		text_RemUnitsTEXT = RemUnitsTEXT.GetComponent<Text> ();
+
+		text_BlueResourceTEXT = BlueResourceTEXT.GetComponent<Text> ();
+		text_RedResourceTEXT = RedResourceTEXT.GetComponent<Text> ();
 
 		// Enable only if in DEPLOY PHASE
 		RemUnitsTEXT.SetActive (false);
@@ -224,6 +238,10 @@ public class MapScript : MonoBehaviour {
 			// TURNS LEFT TEXT
 			text_TurnsLeftTEXT.text = "Turns Left: " + Turns.ToString();
 
+			// RESOURCES TEXTS
+			text_BlueResourceTEXT.text = "Blue Resources: " + _blueUnitControllerScript.TotalResources.ToString();
+			text_RedResourceTEXT.text = "Red Resources: " + _redUnitControllerScript.TotalResources.ToString();
+
 			// DEPLOYABLE/REINFORCEMENTS TEXT
 			if (thePhase == E_PHASE.DEPLOY){
 				RemUnitsTEXT.SetActive (true);
@@ -235,8 +253,11 @@ public class MapScript : MonoBehaviour {
 				}
 			}
 			else if(thePhase == E_PHASE.REINFORCE){
+
+
 				RemUnitsTEXT.SetActive (true);
 				if(whosPlaying == 1){
+
 					text_RemUnitsTEXT.text = "Blue Reinforce Units: " + _blueUnitControllerScript.Deploy_RemainingUnits.ToString();
 				}
 				else if (whosPlaying == 2){
@@ -250,6 +271,7 @@ public class MapScript : MonoBehaviour {
 			if(Input.GetKeyDown("r") && firstSetDone == true){
 				SkipTurn();
 			}
+
 
 //			if(Input.GetKeyDown("p")){
 //				TestEndGame();
@@ -291,14 +313,31 @@ public class MapScript : MonoBehaviour {
 									_Unit.posY = (float)m_Unit.transform.position.y;
 									_Unit.ID = whosPlaying;
 									if (m_Unit.GetComponent<theUnit> ().ID == 1) {
+										//Add to counter
 										player1counter ++;
+
+										//Change Tag
 										m_Unit.tag = "unit_Player1";
+
+										//Set as child of the controller
 										m_Unit.transform.parent = m_BluePlayerController.transform;
+
+										//Add unit into list
 										_blueUnitControllerScript.m_unitList.Add (m_Unit);
+
+										//Minus Remaining Units
 										_blueUnitControllerScript.Acquire_RemainingUnits --;
-										//selectedRegion.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.173f, 0.157f, 0.639f));
+
+										//Change Region Sprite Color
 										selectedRegion.GetComponent<RegionScript> ().origColor = new Color (0.173f, 0.157f, 0.639f);
+
+										//Add the Resource Value
+										_blueUnitControllerScript.TotalResources += _selectedRegion.ResourceValue;
+
+										//Change Player
 										whosPlaying = 2;
+
+										//Change BG color
 										CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor;
 										///m_Unit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player1counter) + 1;
 									} else if (m_Unit.GetComponent<theUnit> ().ID == 2) {
@@ -309,6 +348,7 @@ public class MapScript : MonoBehaviour {
 										_redUnitControllerScript.Acquire_RemainingUnits --; 
 										//selectedRegion.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.639f, 0.173f, 0.157f));
 										selectedRegion.GetComponent<RegionScript> ().origColor = new Color (0.639f, 0.173f, 0.157f);
+										_redUnitControllerScript.TotalResources += _selectedRegion.ResourceValue;
 										whosPlaying = 1;
 										CircleOut.GetComponent<SpriteRenderer> ().material.color = myBlueColor;
 										//m_Unit.GetComponent<theUnit>().numberOfTrainableUnit = (int) (2 * player2counter) + 1;
@@ -754,19 +794,29 @@ public class MapScript : MonoBehaviour {
 			
 			// Add to "To GameObject", Minus from "From GameObject"
 			m_AttackTo.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = (int)_mySlider.value;
+
 			if (m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits > 1) {
 				m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits -= (int)_mySlider.value;
 			} else {
 				m_AttackFrom.GetComponent<RegionScript> ().unitOnRegion.GetComponent<theUnit> ().numberOfUnits = 1;
 			}
+
 			if (m_AttackTo.GetComponent<RegionScript> ().region_Owner == 1) {
-				//m_AttackTo.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.173f, 0.157f, 0.639f));
 				m_AttackTo.GetComponent<RegionScript> ().origColor = new Color (0.173f, 0.157f, 0.639f);
+				//Add the Resource Value
+
+				_blueUnitControllerScript.TotalResources += m_AttackTo.GetComponent<RegionScript> ().ResourceValue;
+				_redUnitControllerScript.TotalResources -= m_AttackTo.GetComponent<RegionScript> ().ResourceValue;
+
 				player1counter ++;
 				player2counter --;
 			} else if (m_AttackTo.GetComponent<RegionScript> ().region_Owner == 2) {
-				//m_AttackTo.GetComponent<SpriteRenderer>().material.SetColor("_Color", new Color(0.639f, 0.173f, 0.157f));
 				m_AttackTo.GetComponent<RegionScript> ().origColor = new Color (0.639f, 0.173f, 0.157f);
+
+				//Add the Resource Value
+				_redUnitControllerScript.TotalResources += m_AttackTo.GetComponent<RegionScript> ().ResourceValue;
+				_blueUnitControllerScript.TotalResources -= m_AttackTo.GetComponent<RegionScript> ().ResourceValue;
+
 				player2counter ++;
 				player1counter --;
 			}
@@ -860,11 +910,13 @@ public class MapScript : MonoBehaviour {
 			
 			else if(firstSetDone == true){
 				if(whosPlaying == 1){
+					REINFORCEMENTS += (int)( _redUnitControllerScript.TotalResources * 0.005f);
 					_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; // Reinforce 5 Units
 					whosPlaying = 2;
 					CircleOut.GetComponent<SpriteRenderer>().material.color = myRedColor;
 				}
 				else if(whosPlaying == 2){
+					REINFORCEMENTS += (int)( _blueUnitControllerScript.TotalResources * 0.005f);
 					_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; // Reinforce 5 Units
 					Turns--;
 					whosPlaying = 1;
@@ -963,7 +1015,7 @@ public class MapScript : MonoBehaviour {
 	void ResultPhaseCheck(){
 		if (whosPlaying == 1) {
 			if (player1counter <= 1 || BlueUnitNumberCheck () == false) { 				// Blue has only 1 region left AND all regions only have 1 unit
-				_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;						// Reinforce 5 Units
+				_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;		// Reinforce 5 Units
 				whosPlaying = 2; 														// Set to Red Player Turn
 				CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor; 	// Change the BGEdges to red
 				thePhase = E_PHASE.REINFORCE; 											// Set the Phase to REINFORCE (so that RED could reinforce)
@@ -1053,6 +1105,7 @@ public class MapScript : MonoBehaviour {
 			currentRegion = null;
 			m_AttackTo = null;
 			m_AttackFrom = null;
+			REINFORCEMENTS += (int)( _redUnitControllerScript.TotalResources * 0.005f);
 			_redUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS;		// Reinforce 5 Units
 			whosPlaying = 2; 														// Set to Red Player Turn
 			CircleOut.GetComponent<SpriteRenderer> ().material.color = myRedColor; 	// Change the BGEdges to red
@@ -1068,6 +1121,7 @@ public class MapScript : MonoBehaviour {
 			currentRegion = null;
 			m_AttackTo = null;
 			m_AttackFrom = null;
+			REINFORCEMENTS += (int)( _blueUnitControllerScript.TotalResources * 0.005f);
 			_blueUnitControllerScript.Deploy_RemainingUnits = REINFORCEMENTS; 		// Reinforce 5 Units
 			Turns--;																// Decrement Turns Left
 			whosPlaying = 1;														// Set to Blue Player Turn

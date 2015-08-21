@@ -9,6 +9,7 @@ public class UnitController : MonoBehaviour {
 	public int Deploy_RemainingUnits;
 	public int Fortify_RemainingUnits;
 
+	public int TotalResources;
 	// Use this for initialization
 	void Start () {
 
