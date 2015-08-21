@@ -87,7 +87,7 @@ public class theUnit : MonoBehaviour {
 
 		_sceneController.GameMap = m_theMap;
 		_sceneController.inBattleScene = true;
-		Application.LoadLevel("Battles");
+		Application.LoadLevel("BumpScene");
 	}
 }
 
